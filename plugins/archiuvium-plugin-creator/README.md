@@ -45,6 +45,18 @@ invoked when reviewing plugins, or delegate to it explicitly.
 
 - **plugin-registry** — Stub MCP server demonstrating the stdio transport pattern
 
+### LSP Server
+
+- **example-language** — Stub LSP server demonstrating the language server configuration
+
+### Output Style
+
+- **example-style** — Demonstrates custom response formatting with frontmatter
+
+### Settings
+
+- `settings.json` — Sets `plugin-reviewer` as the default agent
+
 ## Using as a Template
 
 Copy any component from this plugin as a starting point:

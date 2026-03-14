@@ -32,6 +32,9 @@ plugin-name/
 │   ├── hooks.json           # Hook event configuration
 │   └── scripts/             # Hook executable scripts
 ├── .mcp.json                # MCP server definitions
+├── .lsp.json                # LSP server definitions
+├── output-styles/            # Response formatting styles (.md files)
+├── settings.json             # Plugin-level default settings
 ├── scripts/                 # Shared utilities
 ├── LICENSE
 ├── CHANGELOG.md
@@ -57,7 +60,10 @@ doesn't replace them):
   "commands": ["./commands", "./extra-commands"],
   "agents": "./specialized-agents",
   "hooks": "./config/hooks.json",
-  "mcpServers": "./.mcp.json"
+  "mcpServers": "./.mcp.json",
+  "lspServers": "./.lsp.json",
+  "outputStyles": "./output-styles",
+  "settings": "./settings.json"
 }
 ```
 

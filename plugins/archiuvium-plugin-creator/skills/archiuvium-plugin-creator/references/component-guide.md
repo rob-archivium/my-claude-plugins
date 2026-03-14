@@ -9,6 +9,9 @@ Detailed reference for every Claude Code plugin component type.
 - [Agents](#agents)
 - [Hooks](#hooks)
 - [MCP Servers](#mcp-servers)
+- [LSP Servers](#lsp-servers)
+- [Output Styles](#output-styles)
+- [Plugin Settings](#plugin-settings)
 
 ---
 
@@ -276,3 +279,89 @@ They start automatically when the plugin loads.
 - Use `${VAR_NAME}` for environment variables (API keys, tokens)
 - Servers start on plugin load and persist for the session
 - Each server provides tools that appear in Claude's tool list
+
+---
+
+## LSP Servers
+
+Language Server Protocol servers give Claude real-time code intelligence for
+specific programming languages. They start automatically when the plugin loads.
+
+### Location
+
+`.lsp.json` at the plugin root.
+
+### Configuration
+
+```json
+{
+  "language-id": {
+    "command": "language-server-binary",
+    "args": ["--stdio"],
+    "extensionToLanguage": {
+      ".ext": "language-id"
+    }
+  }
+}
+```
+
+### Key Points
+
+- Users must have the language server binary installed on their machine
+- Use `extensionToLanguage` to map file extensions to language IDs
+- For common languages (TypeScript, Python, Rust), use pre-built official LSP plugins instead
+- Create custom LSP plugins only for languages not already covered
+
+---
+
+## Output Styles
+
+Output styles customize how Claude formats its responses. They're Markdown files
+with frontmatter defining the style name and instructions.
+
+### Location
+
+`output-styles/` at the plugin root.
+
+### Format
+
+```markdown
+---
+name: my-style
+description: Brief description of the formatting style
+---
+
+Instructions for how Claude should format responses when this style is active.
+```
+
+### Key Points
+
+- Styles are applied per-session or per-project
+- Keep instructions concise — they're injected into every response
+- Custom paths can be declared via `outputStyles` in plugin.json
+
+---
+
+## Plugin Settings
+
+A `settings.json` at the plugin root applies default configuration when the
+plugin is enabled. Currently supports the `agent` key.
+
+### Location
+
+`settings.json` at the plugin root.
+
+### Format
+
+```json
+{
+  "agent": "agent-name"
+}
+```
+
+### Key Points
+
+- Setting `agent` activates a custom agent as the main thread
+- The agent must be defined in the plugin's `agents/` directory
+- Settings from `settings.json` take priority over `settings` in `plugin.json`
+- Unknown keys are silently ignored

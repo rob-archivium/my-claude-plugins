@@ -37,6 +37,9 @@ Ask these questions (skip any you can already answer from context):
    - **Agents** — Specialized subagents for delegation
    - **Hooks** — Event handlers that fire on tool use, session events, etc.
    - **MCP Servers** — External tool integrations (APIs, databases, services)
+   - **LSP Servers** — Language server protocol integrations for code intelligence
+   - **Output Styles** — Custom response formatting
+   - **Settings** — Plugin-level default configuration (e.g., default agent)
 3. **Plugin name?** Must be kebab-case, descriptive, unique in the marketplace.
 
 ### 2. Scaffold the Directory Structure
@@ -47,7 +50,7 @@ Use the scaffold script to create the plugin skeleton:
 bash ${CLAUDE_PLUGIN_ROOT}/skills/archiuvium-plugin-creator/scripts/scaffold-plugin.sh <plugin-name> [components...]
 ```
 
-Components: `skill`, `command`, `agent`, `hook`, `mcp`, `all`
+Components: `skill`, `command`, `agent`, `hook`, `mcp`, `lsp`, `output-style`, `settings`, `all`
 
 If the script isn't available, create the structure manually. The required layout is:
 
@@ -64,6 +67,9 @@ plugins/<plugin-name>/
 │   ├── hooks.json            # Hook event configuration
 │   └── scripts/              # Hook scripts
 ├── .mcp.json                 # MCP server definitions
+├── .lsp.json                 # LSP server definitions
+├── output-styles/            # Response formatting styles (.md files)
+├── settings.json             # Plugin-level default settings
 ├── scripts/                  # Shared utilities
 ├── LICENSE
 ├── CHANGELOG.md
@@ -86,6 +92,9 @@ Read the appropriate reference file for detailed guidance on each component type
 - **Agents:** Read `references/component-guide.md` § Agents
 - **Hooks:** Read `references/component-guide.md` § Hooks
 - **MCP Servers:** Read `references/component-guide.md` § MCP Servers
+- **LSP Servers:** Read `references/component-guide.md` § LSP Servers
+- **Output Styles:** Read `references/component-guide.md` § Output Styles
+- **Settings:** Read `references/component-guide.md` § Plugin Settings
 
 For working examples of each component type, see the `examples/` directory.
 
@@ -152,6 +161,9 @@ Then install locally:
 | Agent | `agents/<name>.md` | Markdown + YAML frontmatter | By Claude or user delegation |
 | Hook | `hooks/hooks.json` | JSON event config | Automatic on matching events |
 | MCP Server | `.mcp.json` | JSON server config | Automatic on plugin load |
+| LSP Server | `.lsp.json` | JSON server config | Automatic on plugin load |
+| Output Style | `output-styles/<name>.md` | Markdown + YAML frontmatter | Per-session or per-project |
+| Settings | `settings.json` | JSON config | Automatic on plugin enable |
 
 ## Common Pitfalls
 

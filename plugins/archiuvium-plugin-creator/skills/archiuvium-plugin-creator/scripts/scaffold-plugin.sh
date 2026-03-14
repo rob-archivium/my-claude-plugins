@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Scaffold a new Claude Code plugin directory structure.
 # Usage: scaffold-plugin.sh <plugin-name> [components...]
-# Components: skill, command, agent, hook, mcp, all
+# Components: skill, command, agent, hook, mcp, lsp, output-style, settings, all
 set -euo pipefail
 
 PLUGIN_NAME="${1:?Usage: scaffold-plugin.sh <plugin-name> [components...]}"
@@ -145,6 +145,46 @@ if has_component "mcp"; then
 }
 EOF
   echo "  Created .mcp.json"
+fi
+
+# LSP
+if has_component "lsp"; then
+  cat > "$PLUGIN_DIR/.lsp.json" << 'EOF'
+{
+  "example-language": {
+    "command": "example-language-server",
+    "args": ["--stdio"],
+    "extensionToLanguage": {
+      ".exlang": "example-language"
+    }
+  }
+}
+EOF
+  echo "  Created .lsp.json"
+fi
+
+# Output Style
+if has_component "output-style"; then
+  mkdir -p "$PLUGIN_DIR/output-styles"
+  cat > "$PLUGIN_DIR/output-styles/default.md" << 'EOF'
+---
+name: default
+description: TODO - describe the formatting style
+---
+
+TODO: Write formatting instructions here.
+EOF
+  echo "  Created output-styles/default.md"
+fi
+
+# Settings
+if has_component "settings"; then
+  cat > "$PLUGIN_DIR/settings.json" << 'EOF'
+{
+  "agent": ""
+}
+EOF
+  echo "  Created settings.json"
 fi
 
 # Standard files

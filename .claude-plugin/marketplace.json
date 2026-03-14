@@ -23,6 +23,21 @@
       "keywords": ["template", "plugin-creation", "scaffolding", "skills", "commands", "agents", "hooks", "mcp"],
       "category": "development",
       "tags": ["getting-started", "reference"]
+    },
+    {
+      "name": "shopify-qbo",
+      "source": {
+        "source": "github",
+        "repo": "fnordpig/ShopifyQuickbooksBridge"
+      },
+      "description": "One-way Shopify to QuickBooks Online sync pipeline. Extracts customers and orders from Shopify, transforms with field mapping and tax resolution, and loads into QBO as draft invoices with full audit trails.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Ralph Waugh"
+      },
+      "license": "MIT",
+      "keywords": ["shopify", "quickbooks", "sync", "invoices", "tax-mapping", "integrations"],
+      "category": "integrations"
     }
   ]
 }
