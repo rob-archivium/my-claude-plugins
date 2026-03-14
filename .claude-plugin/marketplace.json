@@ -1,0 +1,28 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "my-laude-plugins",
+  "description": "Team plugin marketplace for Claude Code extensions",
+  "owner": {
+    "name": "Ralph Waugh"
+  },
+  "metadata": {
+    "description": "Curated collection of Claude Code plugins for team use",
+    "version": "0.1.0",
+    "pluginRoot": "./plugins"
+  },
+  "plugins": [
+    {
+      "name": "archiuvium-plugin-creator",
+      "source": "archiuvium-plugin-creator",
+      "description": "Kitchen-sink template plugin demonstrating every Claude Code plugin component type. Includes a skill that guides users through creating new plugins from scratch, with working examples of skills, commands, agents, hooks, and MCP servers.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Ralph Waugh"
+      },
+      "license": "MIT",
+      "keywords": ["template", "plugin-creation", "scaffolding", "skills", "commands", "agents", "hooks", "mcp"],
+      "category": "development",
+      "tags": ["getting-started", "reference"]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "skill_name": "archiuvium-plugin-creator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I want to create a new plugin called 'deploy-tools' that has a skill for guiding deployments, a /deploy command, and hooks that validate deployment configs before they're written. Can you set it up?",
+      "expected_output": "A complete plugin directory at plugins/deploy-tools/ with .claude-plugin/plugin.json, skills/deploy-tools/SKILL.md, commands/deploy.md (or deploy-tools.md), hooks/hooks.json with PreToolUse config, and hooks/scripts/ with an executable script. All paths should use ${CLAUDE_PLUGIN_ROOT}. An entry should be added to marketplace.json.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "How do I add an MCP server to my existing plugin? I have a REST API at https://api.internal.company.com/mcp that needs an auth token.",
+      "expected_output": "Guidance to create or update .mcp.json at the plugin root with an HTTP-type MCP server entry using ${API_TOKEN} for the auth header. Should reference the component-guide.md for the full MCP section and explain the three server types.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I need a plugin with everything — skills, commands, agents, hooks, MCP — called 'code-quality'. Scaffold the whole thing for me.",
+      "expected_output": "Runs scaffold-plugin.sh with 'code-quality all' or manually creates the full directory structure. All component types present with working templates. Plugin registered in marketplace.json. All hook scripts executable. All paths use ${CLAUDE_PLUGIN_ROOT}.",
+      "files": []
+    }
+  ]
+}
