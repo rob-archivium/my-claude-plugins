@@ -30,13 +30,13 @@
         "source": "github",
         "repo": "fnordpig/ShopifyQuickbooksBridge"
       },
-      "description": "One-way Shopify to QuickBooks Online sync pipeline. Extracts customers and orders from Shopify, transforms with field mapping and tax resolution, and loads into QBO as draft invoices with full audit trails.",
-      "version": "1.0.0",
+      "description": "Shopify to QuickBooks Online sync and management. Sync customers, orders, and tax data; look up records; fix discrepancies; resolve customer mismatches; generate reports; and undo actions — all with propose-then-confirm safety.",
+      "version": "2.0.0",
       "author": {
         "name": "Ralph Waugh"
       },
       "license": "MIT",
-      "keywords": ["shopify", "quickbooks", "sync", "invoices", "tax-mapping", "integrations"],
+      "keywords": ["shopify", "quickbooks", "sync", "invoices", "tax-mapping", "bookkeeper", "lookup", "fix", "report", "reconcile"],
       "category": "integrations"
     }
   ]

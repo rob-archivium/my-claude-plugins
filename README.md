@@ -19,7 +19,7 @@ Or from a Git host:
 | Plugin | Description |
 |--------|-------------|
 | **archiuvium-plugin-creator** | Kitchen-sink template and plugin scaffolding tool. Demonstrates every component type (skills, commands, agents, hooks, MCP servers). |
-| **shopify-qbo** | One-way Shopify → QuickBooks Online sync pipeline. Customers, orders/invoices, and tax mapping with draft mode safety and audit trails. |
+| **shopify-qbo** | Shopify → QuickBooks Online sync and management. 11 commands for sync, lookup, fix, delete, resolve customers, reconcile, report, and undo. |
 
 ## Installing a Plugin
 
