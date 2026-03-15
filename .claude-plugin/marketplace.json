@@ -3,7 +3,7 @@
   "name": "my-claude-plugins",
   "description": "Team plugin marketplace for Claude Code extensions",
   "owner": {
-    "name": "Ralph Waugh"
+    "name": "Robert Waugh"
   },
   "metadata": {
     "description": "Curated collection of Claude Code plugins for team use",
@@ -17,7 +17,7 @@
       "description": "Kitchen-sink template plugin demonstrating every Claude Code plugin component type. Includes a skill that guides users through creating new plugins from scratch, with working examples of skills, commands, agents, hooks, and MCP servers.",
       "version": "0.1.0",
       "author": {
-        "name": "Ralph Waugh"
+        "name": "Robert Waugh"
       },
       "license": "MIT",
       "keywords": ["template", "plugin-creation", "scaffolding", "skills", "commands", "agents", "hooks", "mcp"],
@@ -33,7 +33,7 @@
       "description": "Shopify to QuickBooks Online sync and management. Sync customers, orders, and tax data; look up records; fix discrepancies; resolve customer mismatches; generate reports; and undo actions — all with propose-then-confirm safety.",
       "version": "2.0.0",
       "author": {
-        "name": "Ralph Waugh"
+        "name": "Robert Waugh"
       },
       "license": "MIT",
       "keywords": ["shopify", "quickbooks", "sync", "invoices", "tax-mapping", "bookkeeper", "lookup", "fix", "report", "reconcile"],
