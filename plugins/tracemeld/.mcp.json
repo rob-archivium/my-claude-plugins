@@ -2,7 +2,7 @@
   "mcpServers": {
     "tracemeld": {
       "command": "npx",
-      "args": ["-y", "tracemeld"]
+      "args": ["-y", "tracemeld@latest"]
     }
   }
 }
