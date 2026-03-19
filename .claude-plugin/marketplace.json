@@ -38,6 +38,19 @@
       "license": "MIT",
       "keywords": ["shopify", "quickbooks", "sync", "invoices", "tax-mapping", "bookkeeper", "lookup", "fix", "report", "reconcile"],
       "category": "integrations"
+    },
+    {
+      "name": "tracemeld",
+      "source": "./plugins/tracemeld",
+      "description": "LLM-native performance profiling — import CPU profiles from any language (Rust, Go, Python, TypeScript, C/C++), find bottlenecks, detect waste patterns, and navigate to hot code via LSP. Includes 12 MCP tools, 6 language profiling skills, and a performance analysis agent.",
+      "version": "0.1.0",
+      "author": {
+        "name": "Robert Waugh"
+      },
+      "license": "MIT",
+      "keywords": ["profiling", "performance", "flamegraph", "pprof", "tracing", "optimization", "bottleneck", "cpu", "rust", "go", "python", "typescript", "cpp"],
+      "category": "performance",
+      "tags": ["profiling", "analysis", "mcp-server"]
     }
   ]
 }
