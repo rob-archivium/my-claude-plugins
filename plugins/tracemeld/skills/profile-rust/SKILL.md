@@ -10,7 +10,30 @@ description: >
 
 Guide the user through profiling a Rust application, importing the profile into tracemeld, and analyzing the results.
 
-## Step 1: Choose a Profiling Tool
+## Step 1: Enable Debug Symbols (CRITICAL)
+
+**Without debug symbols, profiles show hex addresses (`0x44f8`) instead of function names.** This is the #1 issue with Rust profiling.
+
+Add to your `Cargo.toml`:
+
+```toml
+[profile.release]
+debug = true                # Full debug info — required for symbol resolution
+strip = false               # Don't strip symbols from the binary
+```
+
+For best stack accuracy on Linux, also set:
+
+```bash
+export RUSTFLAGS="-C force-frame-pointers=yes"
+cargo build --release
+```
+
+On macOS, frame pointers are enabled by default — just `cargo build --release` with `debug = true` is sufficient.
+
+**Verify symbols are present:** After building, check with `nm target/release/my-binary | head` — you should see function names, not just addresses.
+
+## Step 2: Choose a Profiling Tool
 
 ### Option A: samply (Recommended — macOS and Linux)
 
@@ -20,7 +43,7 @@ samply is a sampling profiler that outputs Gecko Profiler JSON, which tracemeld 
 # Install samply
 cargo install samply
 
-# Build with debug info (release mode + debug symbols)
+# Build (with debug = true in Cargo.toml as above)
 cargo build --release
 
 # Profile a binary
@@ -64,32 +87,6 @@ perf record -g --call-graph dwarf -F 997 ./target/release/my-binary [args...]
 perf script | inferno-collapse-perf --all > profile.folded
 ```
 
-## Step 2: Build Configuration
-
-Ensure your Cargo.toml has debug info enabled for release builds:
-
-```toml
-[profile.release]
-debug = true                # Full debug info for symbol resolution
-# OR
-debug = 1                   # Line tables only (smaller binary, still useful)
-```
-
-For frame pointers (improves stack accuracy, especially on Linux):
-
-```toml
-[profile.release]
-debug = true
-strip = false
-```
-
-And set the environment variable:
-
-```bash
-export RUSTFLAGS="-C force-frame-pointers=yes"
-cargo build --release
-```
-
 ## Step 3: Import into tracemeld
 
 After obtaining the profile file, import it:
@@ -100,7 +97,7 @@ After obtaining the profile file, import it:
 
 tracemeld auto-detects all of these formats.
 
-## Step 4: Analyze
+## Step 4: Analyze (tracemeld tells you WHAT, LSP tells you WHY)
 
 Once imported, run the full analysis workflow:
 
