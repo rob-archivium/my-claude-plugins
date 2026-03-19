@@ -59,59 +59,51 @@ cargo build --release
 cargo install samply
 ```
 
-### How samply works (important for getting resolved symbols)
+### Option A: Automated (recommended for Claude Code / headless)
 
-samply saves **raw addresses** in the profile JSON — NOT function names. It resolves symbols by running a local symbol server that Firefox Profiler queries in the browser. This means:
-
-- `--save-only` / `-o` produces a file with **hex addresses only** (useless for tracemeld)
-- You MUST let samply open the browser, where symbols get resolved, then save from there
-
-### The correct workflow
+Use `--save-only` with `--unstable-presymbolicate` to save a profile with a symbol sidecar file. tracemeld reads both files and resolves symbols automatically — no browser needed.
 
 ```bash
-# 1. Run samply WITHOUT --save-only — let it open the browser
-samply record ./target/release/my-binary [args...]
-
-# samply opens Firefox Profiler in your browser with fully resolved symbols.
-# DO NOT close the terminal — samply's symbol server is running there.
-
-# 2. In Firefox Profiler (the browser tab):
-#    - Verify you see function names (not hex addresses)
-#    - Click the upload/share button (arrow icon in top-right)
-#    - Select "Save as file..."
-#    - Save to e.g. /tmp/profile.json
-
-# 3. Now close the samply process in the terminal (Ctrl+C)
+# THE EXACT COMMAND — do not omit any flags:
+samply record --save-only --unstable-presymbolicate -o /tmp/profile.json.gz ./target/release/my-binary [args...]
 ```
 
-The file saved FROM Firefox Profiler contains the resolved symbol names. This is the file you import into tracemeld.
+This produces TWO files:
+- `/tmp/profile.json.gz` — the profile (gzip compressed, hex addresses)
+- `/tmp/profile.json.gz.syms.json` — the symbol sidecar (function names, file paths, line numbers)
 
-### For benchmarks and tests
+**BOTH files must exist at the same path.** tracemeld auto-detects the sidecar and resolves addresses during import.
+
+**CRITICAL: You MUST include `--unstable-presymbolicate`.** Without it, only the .json.gz is produced with no symbol info, and you get hex addresses like `0x44f8` instead of function names.
 
 ```bash
-# Profile a cargo bench
-samply record -- cargo bench --bench my_bench
+# For benchmarks:
+samply record --save-only --unstable-presymbolicate -o /tmp/bench.json.gz -- cargo bench --bench my_bench
 
-# Profile a cargo test
-samply record -- cargo test --release -- --nocapture specific_test
+# For tests:
+samply record --save-only --unstable-presymbolicate -o /tmp/test.json.gz -- cargo test --release -- --nocapture specific_test
 ```
 
-Same workflow: let it open browser → verify symbols → save from browser → import.
+**If the sidecar has `"data":[]` (empty symbols):** The issue is missing debug info. Verify `debug = true` in Cargo.toml, rebuild, and re-record. On macOS, you may also need to run `dsymutil target/release/my-binary` before profiling to generate the .dSYM bundle.
 
 ## Step 3: Import into tracemeld
 
-Import the file you saved FROM Firefox Profiler (not from `--save-only`):
+```
+import_profile with source="/tmp/profile.json.gz" format="gecko"
+```
 
-```
-import_profile with source="/path/to/saved-profile.json" format="gecko"
-```
+tracemeld automatically:
+- Decompresses gzip
+- Detects and loads the `.syms.json` sidecar if present (same path + `.syms.json`)
+- Resolves hex addresses to function names using the sidecar
 
 You should see lanes (one per thread), frames with resolved function names, and samples.
 
-**If you see hex addresses instead of function names**, one of these is wrong:
-- You used `--save-only` or `-o` instead of saving from Firefox Profiler
-- `debug = true` is missing from Cargo.toml
-- The binary was stripped (`strip = true` or `strip = "symbols"` in Cargo.toml)
+**If you see hex addresses instead of function names**, check in order:
+1. Does the `.syms.json` sidecar file exist? (`ls /tmp/profile.json.gz.syms.json`) — if not, re-record with `--unstable-presymbolicate`
+2. Is the sidecar non-empty? (`cat /tmp/profile.json.gz.syms.json`) — if `"data":[]`, samply couldn't find debug info
+3. Is `debug = true` in Cargo.toml? Without it, there's no debug info for samply to read
+4. Was the binary stripped? Check for `strip = true` in Cargo.toml
 
 ## Step 4: Analyze (tracemeld tells you WHAT, LSP tells you WHY)
 
