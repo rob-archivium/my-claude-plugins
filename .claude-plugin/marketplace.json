@@ -43,7 +43,7 @@
       "name": "tracemeld",
       "source": "./plugins/tracemeld",
       "description": "LLM-native performance profiling — import CPU profiles from any language (Rust, Go, Python, TypeScript, C/C++), find bottlenecks, detect waste patterns, and navigate to hot code via LSP. Includes 12 MCP tools, 6 language profiling skills, and a performance analysis agent.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "Robert Waugh"
       },

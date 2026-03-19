@@ -1,6 +1,6 @@
 {
   "name": "tracemeld",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "LLM-native performance profiling — import CPU profiles from any language (Rust, Go, Python, TypeScript, C/C++), find bottlenecks, detect waste patterns, and navigate to hot code via LSP. Batteries included with language-specific profiling guides.",
   "author": {
     "name": "Robert Waugh"
