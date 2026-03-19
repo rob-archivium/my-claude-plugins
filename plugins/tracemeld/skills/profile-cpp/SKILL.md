@@ -43,21 +43,26 @@ Key flags explained:
 
 ### Option A: samply (Recommended — macOS and Linux)
 
-samply is a sampling profiler that outputs Gecko Profiler JSON.
+samply is a sampling profiler. It saves raw addresses and resolves symbols via a local server that Firefox Profiler queries in the browser.
+
+**Do NOT use `--save-only` or `-o`** — those produce files with hex addresses only, not resolved function names.
 
 ```bash
 # Install (requires Rust toolchain)
 cargo install samply
 
-# Profile a binary
+# Profile a binary — let it open the browser (DO NOT use --save-only)
 samply record ./my-binary [args...]
 
 # Profile with elevated privileges (Linux, for kernel stacks)
 sudo samply record ./my-binary [args...]
 
-# samply opens Firefox Profiler in the browser automatically.
-# Save the profile: click the upload arrow → "Save as file..."
-# The saved file is a .json in Gecko Profiler format.
+# In Firefox Profiler (browser tab that opens):
+#   1. Verify you see function names (not hex addresses)
+#   2. Click the upload/share button → "Save as file..."
+#   3. Save to e.g. /tmp/profile.json
+# The file saved FROM the browser contains resolved symbol names.
+# DO NOT close the terminal while saving — samply's symbol server runs there.
 ```
 
 ### Option B: perf + inferno (Linux)

@@ -57,36 +57,61 @@ cargo build --release
 ```bash
 # Install samply (one-time)
 cargo install samply
-
-# Profile a binary — MUST use -o to save to a file
-samply record -o /tmp/profile.json ./target/release/my-binary [args...]
-
-# Profile a cargo bench
-samply record -o /tmp/bench-profile.json -- cargo bench --bench my_bench
-
-# Profile a cargo test
-samply record -o /tmp/test-profile.json -- cargo test --release -- --nocapture specific_test
 ```
 
-**IMPORTANT: Always use `-o /path/to/output.json`.** Without `-o`, samply opens Firefox Profiler in the browser and you have to manually save. With `-o`, it writes the Gecko JSON file directly.
+### How samply works (important for getting resolved symbols)
 
-The output file is gzip-compressed Gecko Profiler JSON. tracemeld handles gzip automatically.
+samply saves **raw addresses** in the profile JSON — NOT function names. It resolves symbols by running a local symbol server that Firefox Profiler queries in the browser. This means:
+
+- `--save-only` / `-o` produces a file with **hex addresses only** (useless for tracemeld)
+- You MUST let samply open the browser, where symbols get resolved, then save from there
+
+### The correct workflow
+
+```bash
+# 1. Run samply WITHOUT --save-only — let it open the browser
+samply record ./target/release/my-binary [args...]
+
+# samply opens Firefox Profiler in your browser with fully resolved symbols.
+# DO NOT close the terminal — samply's symbol server is running there.
+
+# 2. In Firefox Profiler (the browser tab):
+#    - Verify you see function names (not hex addresses)
+#    - Click the upload/share button (arrow icon in top-right)
+#    - Select "Save as file..."
+#    - Save to e.g. /tmp/profile.json
+
+# 3. Now close the samply process in the terminal (Ctrl+C)
+```
+
+The file saved FROM Firefox Profiler contains the resolved symbol names. This is the file you import into tracemeld.
+
+### For benchmarks and tests
+
+```bash
+# Profile a cargo bench
+samply record -- cargo bench --bench my_bench
+
+# Profile a cargo test
+samply record -- cargo test --release -- --nocapture specific_test
+```
+
+Same workflow: let it open browser → verify symbols → save from browser → import.
 
 ## Step 3: Import into tracemeld
 
-```
-import_profile with source="/tmp/profile.json" format="gecko"
-```
-
-Or let tracemeld auto-detect:
+Import the file you saved FROM Firefox Profiler (not from `--save-only`):
 
 ```
-import_profile with source="/tmp/profile.json"
+import_profile with source="/path/to/saved-profile.json" format="gecko"
 ```
 
 You should see lanes (one per thread), frames with resolved function names, and samples.
 
-**If you see hex addresses instead of function names:** Go back to Step 1 — `debug = true` is missing from Cargo.toml, or the binary was stripped.
+**If you see hex addresses instead of function names**, one of these is wrong:
+- You used `--save-only` or `-o` instead of saving from Firefox Profiler
+- `debug = true` is missing from Cargo.toml
+- The binary was stripped (`strip = true` or `strip = "symbols"` in Cargo.toml)
 
 ## Step 4: Analyze (tracemeld tells you WHAT, LSP tells you WHY)
 
