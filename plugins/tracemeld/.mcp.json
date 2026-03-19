@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "tracemeld": {
+      "command": "npx",
+      "args": ["-y", "tracemeld"]
+    }
+  }
+}
