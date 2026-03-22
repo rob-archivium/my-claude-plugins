@@ -20,6 +20,7 @@ Or from a Git host:
 |--------|-------------|
 | **archiuvium-plugin-creator** | Kitchen-sink template and plugin scaffolding tool. Demonstrates every component type (skills, commands, agents, hooks, MCP servers). |
 | **shopify-qbo** | Shopify → QuickBooks Online sync and management. 11 commands for sync, lookup, fix, delete, resolve customers, reconcile, report, and undo. |
+| **tracemeld** | LLM-native performance profiling. Import CPU/GPU profiles from any language (Rust, Go, Python, TypeScript, C/C++, CUDA), find bottlenecks, detect waste patterns, and navigate to hot code via LSP. |
 
 ## Installing a Plugin
 
