@@ -119,17 +119,12 @@ tracemeld auto-detects pprof protobuf format.
 
 ## Step 3: Analyze
 
-Once imported, run the full analysis workflow:
+Once the profile is imported, use the **analyze-profile** skill for the full analysis workflow. It covers:
+- `profile_summary` → `bottleneck` → `hotpaths` → `find_waste` → `spinpaths` → `starvations`
+- LSP integration (hover, findReferences, incomingCalls) for source-level investigation
+- Synthesis of findings into actionable recommendations
 
-1. `profile_summary` with group_by="kind" — see headline numbers
-2. `bottleneck` with dimension="wall_ms" and top_n=5 — find the most expensive functions
-3. `hotpaths` with dimension="wall_ms" — see complete call chains
-4. `find_waste` — detect anti-patterns
-5. For each bottleneck with a `source` field:
-   - Read the source file at the reported line
-   - Use LSP `hover` on the function (gopls) for type info and documentation
-   - Use LSP `findReferences` to see all call sites
-   - Use LSP `incomingCalls` to trace the call hierarchy
+For Go profiles, use gopls as the LSP server. The analysis skill's LSP steps (hover for type info, findReferences for call sites, incomingCalls for call hierarchy) all work with gopls.
 
 ## Common Go Performance Patterns
 

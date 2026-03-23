@@ -14,7 +14,7 @@ Guide the user through profiling a Node.js or TypeScript application, importing 
 
 ### Option A: Node.js --cpu-prof (Recommended — zero dependencies)
 
-Node.js has built-in V8 CPU profiling. This produces a `.cpuprofile` file in Chrome trace format.
+Node.js has built-in V8 CPU profiling. This produces a `.cpuprofile` file that tracemeld imports directly.
 
 ```bash
 # Profile a script
@@ -34,6 +34,8 @@ node --cpu-prof --cpu-prof-dir=./profiles script.js
 # Start the process, send requests, then send SIGINT (Ctrl+C) to stop
 node --cpu-prof server.js
 ```
+
+**Note:** Vitest, Jest, and other test runners that spawn worker threads will produce one `.cpuprofile` per worker. The largest file is typically the main process; each worker's profile can be imported separately or the largest one analyzed first.
 
 ### Option B: Chrome DevTools (for running servers)
 
@@ -86,24 +88,20 @@ clinic flame --collect-only -- node server.js
 
 After obtaining the profile file, import it:
 
-- **.cpuprofile (from --cpu-prof)**: `import_profile` with source=path, format="auto"
-- **.json (from Chrome DevTools)**: `import_profile` with source=path, format="auto"
+- **.cpuprofile (from --cpu-prof)**: `import_profile` with source=path, format="auto" — auto-detected as V8 CPUProfile
+- **.json (from Chrome DevTools)**: `import_profile` with source=path, format="auto" — auto-detected as Chrome trace
 - **Collapsed stacks (from 0x)**: `import_profile` with source=path, format="auto"
 
-tracemeld auto-detects all V8/Chrome formats.
+tracemeld auto-detects all three formats.
 
 ## Step 3: Analyze
 
-Once imported, run the full analysis workflow:
+Once the profile is imported, use the **analyze-profile** skill for the full analysis workflow. It covers:
+- `profile_summary` → `bottleneck` → `hotpaths` → `find_waste` → `spinpaths` → `starvations`
+- LSP integration (hover, findReferences, incomingCalls) for source-level investigation
+- Synthesis of findings into actionable recommendations
 
-1. `profile_summary` with group_by="kind" — see headline numbers
-2. `bottleneck` with dimension="wall_ms" and top_n=5 — find the most expensive functions
-3. `hotpaths` with dimension="wall_ms" — see complete call chains
-4. `find_waste` — detect anti-patterns
-5. For each bottleneck with a `source` field:
-   - Read the source file at the reported line
-   - Use LSP `hover` on the function for type info
-   - Use LSP `findReferences` to see all call sites
+For TypeScript profiles, use the TypeScript language server (tsserver). V8 CPUProfile imports use `cpu_ms` as the value dimension — use `bottleneck` with dimension="cpu_ms" rather than "wall_ms".
 
 ## Common TypeScript / Node.js Performance Patterns
 

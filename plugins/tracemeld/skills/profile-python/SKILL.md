@@ -20,11 +20,8 @@ py-spy is a sampling profiler that can attach to running processes and outputs m
 # Install
 pip install py-spy
 
-# Record collapsed stacks (best for tracemeld)
+# Record collapsed stacks (best for tracemeld — this is the recommended format)
 py-spy record --format raw -o profile.folded -- python script.py
-
-# Record speedscope JSON format
-py-spy record --format speedscope -o profile.json -- python script.py
 
 # Attach to a running process
 py-spy record --format raw -o profile.folded --pid 12345
@@ -41,6 +38,8 @@ py-spy record --format raw --rate 997 -o profile.folded -- python script.py
 # py-spy may need root on Linux:
 sudo py-spy record --format raw -o profile.folded --pid 12345
 ```
+
+**Note:** py-spy also supports `--format speedscope` but tracemeld's speedscope importer is not yet implemented. Use `--format raw` (collapsed stacks) for tracemeld.
 
 ### Option B: cProfile + flameprof (built-in, no install needed)
 
@@ -91,23 +90,19 @@ pip install yappi
 After obtaining the profile file, import it:
 
 - **Collapsed stacks (.folded from py-spy --format raw)**: `import_profile` with source=path, format="auto"
-- **Speedscope JSON (.json from py-spy --format speedscope)**: `import_profile` with source=path, format="auto"
+- **Collapsed stacks (.folded from flameprof)**: `import_profile` with source=path, format="auto"
 - **pstat (.prof from cProfile)**: Convert to collapsed stacks first with flameprof, then import
 
-tracemeld auto-detects collapsed stacks and speedscope JSON.
+tracemeld auto-detects collapsed stacks format.
 
 ## Step 3: Analyze
 
-Once imported, run the full analysis workflow:
+Once the profile is imported, use the **analyze-profile** skill for the full analysis workflow. It covers:
+- `profile_summary` → `bottleneck` → `hotpaths` → `find_waste` → `spinpaths` → `starvations`
+- LSP integration (hover, findReferences, incomingCalls) for source-level investigation
+- Synthesis of findings into actionable recommendations
 
-1. `profile_summary` with group_by="kind" — see headline numbers
-2. `bottleneck` with dimension="wall_ms" and top_n=5 — find the most expensive functions
-3. `hotpaths` with dimension="wall_ms" — see complete call chains
-4. `find_waste` — detect anti-patterns
-5. For each bottleneck with a `source` field:
-   - Read the source file at the reported line
-   - Use LSP `hover` on the function for type info (works with pyright/pylsp)
-   - Use LSP `findReferences` to see all call sites
+For Python profiles, use pyright or pylsp as the LSP server. The analysis skill's LSP steps work with both for type info, call sites, and call hierarchy.
 
 ## Common Python Performance Patterns
 

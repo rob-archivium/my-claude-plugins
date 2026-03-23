@@ -105,20 +105,14 @@ You should see lanes (one per thread), frames with resolved function names, and 
 3. Is `debug = true` in Cargo.toml? Without it, there's no debug info for samply to read
 4. Was the binary stripped? Check for `strip = true` in Cargo.toml
 
-## Step 4: Analyze (tracemeld tells you WHAT, LSP tells you WHY)
+## Step 4: Analyze
 
-Once imported, run the full analysis workflow:
+Once the profile is imported, use the **analyze-profile** skill for the full analysis workflow. It covers:
+- `profile_summary` → `bottleneck` → `hotpaths` → `find_waste` → `spinpaths` → `starvations`
+- LSP integration (hover, findReferences, incomingCalls) for source-level investigation
+- Synthesis of findings into actionable recommendations
 
-1. `profile_summary` with group_by="lane" — see which threads are active and where time is spent
-2. `bottleneck` with dimension="wall_ms" and top_n=5 — find the most expensive functions
-3. `hotpaths` with dimension="wall_ms" — see complete call chains to the hotspots
-4. `find_waste` — detect anti-patterns like retry loops or redundant operations
-5. `starvations` — check for thread starvation (idle threads while others are busy)
-6. For each bottleneck with a `source` field:
-   - Read the source file at the reported line
-   - Use LSP `hover` to understand the function signature
-   - Use LSP `findReferences` to see all call sites
-   - Use LSP `incomingCalls` to trace the call hierarchy
+For Rust profiles, use rust-analyzer as the LSP server. Multi-threaded Rust profiles benefit especially from `starvations` (detecting idle threads while others are busy) and grouping by lane (`profile_summary` with group_by="lane").
 
 ## Linux Alternative: perf + inferno
 
