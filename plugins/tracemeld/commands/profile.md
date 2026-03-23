@@ -12,6 +12,8 @@ The user wants to analyze a performance profile. Parse $ARGUMENTS:
 1. **Import the profile** using the tracemeld MCP `import_profile` tool:
    - source: the file path from arguments
    - format: "auto" (let tracemeld detect the format)
+   - Supported formats: pprof, gecko, chrome trace, collapsed stacks, speedscope, Claude Code transcripts (.jsonl)
+   - For Claude transcripts: idle time (human between turns) is excluded by default. Use `include_idle: true` if you want to see how slow the human is
 
 2. **Get the overview** using `profile_summary` with group_by="kind"
 
