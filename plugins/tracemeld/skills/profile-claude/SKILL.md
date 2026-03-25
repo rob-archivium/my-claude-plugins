@@ -32,6 +32,8 @@ If the user already has a `.jsonl` path, skip straight to Step 2.
 import_profile with source=<path>, format="auto"
 ```
 
+Each import automatically resets previous profile data, so you always get a clean analysis.
+
 tracemeld auto-detects Claude Code JSONL transcripts by looking for `sessionId` and `type` fields.
 
 **Key parameter — `include_idle`:**
