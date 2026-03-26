@@ -1,11 +1,11 @@
 {
   "name": "tracemeld",
-  "version": "0.2.1",
-  "description": "LLM-native performance profiling — import CPU and GPU profiles from any language (Rust, Go, Python, TypeScript, C/C++, CUDA), find bottlenecks, detect waste patterns, and navigate to hot code via LSP. Batteries included with language-specific profiling guides.",
+  "version": "0.3.0",
+  "description": "LLM-native performance profiling — import CPU and GPU profiles from any language (Rust, Go, Python, TypeScript, C/C++, CUDA, Metal/MPS/MLX), find bottlenecks, detect waste patterns, and navigate to hot code via LSP. Batteries included with language-specific profiling guides.",
   "author": {
     "name": "Robert Waugh"
   },
   "license": "MIT",
-  "keywords": ["profiling", "performance", "flamegraph", "pprof", "tracing", "optimization", "bottleneck", "cuda", "gpu", "nsight"],
+  "keywords": ["profiling", "performance", "flamegraph", "pprof", "tracing", "optimization", "bottleneck", "cuda", "gpu", "nsight", "metal", "mps", "mlx", "xctrace", "apple-silicon"],
   "mcpServers": "./.mcp.json"
 }
