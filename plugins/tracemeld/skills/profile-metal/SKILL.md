@@ -152,13 +152,58 @@ In Metal profiles:
 focus_function with function_name="gpu-compute:<operation name>"
 ```
 
+## Labeling Metal Objects for Trace Readability
+
+Without labels, Metal System Trace shows generic names like `Command Buffer 0:Compute Command 0`. Labels are the single most impactful thing for trace readability — they propagate through every trace track and appear in the `label` field of imported spans.
+
+### What to label
+
+| Object | Label property | What it controls in the trace |
+|--------|---------------|-------------------------------|
+| `MTLCommandBuffer` | `.label` | Groups all encoders in a submission — shows on command buffer track |
+| `MTLComputeCommandEncoder` | `.label` | Individual compute dispatch name |
+| `MTLRenderCommandEncoder` | `.label` | Render pass name |
+| `MTLBlitCommandEncoder` | `.label` | Copy/fill operation name |
+| `MTLCommandQueue` | `.label` | Queue track name in Instruments |
+| `MTLBuffer` / `MTLTexture` | `.label` | Shows in memory allocations track |
+
+### Debug groups (sub-intervals within encoders)
+
+```swift
+encoder.pushDebugGroup("fft-pass-1")
+// dispatch work...
+encoder.popDebugGroup()
+```
+
+These nest within an encoder as sub-intervals in Instruments. Useful when one encoder does multiple logical operations.
+
+### os_signpost (CPU-side markers correlated with GPU work)
+
+```rust
+use signpost::{OsLog, const_poi_logger};
+static GPU_LOGGER: OsLog = const_poi_logger!("com.myapp.gpu");
+
+let _interval = signpost::begin_interval!(GPU_LOGGER, 1, "MatMul Batch");
+command_buffer.commit();
+```
+
+These appear in the `signpost` lane and export via `os-signpost-interval`. Use them to bracket "this is where I submitted the matmul" on the CPU side, then correlate with the GPU compute interval.
+
+### Environment variables (no code changes)
+
+| Variable | Effect |
+|----------|--------|
+| `MTL_CAPTURE_ENABLED=1` | Required for Metal System Trace capture |
+| `MTL_DEBUG_LAYER=1` | Adds validation labels |
+| `METAL_DEVICE_WRAPPER_TYPE=1` | Enhanced capture |
+
 ## Framework-Specific Guidance
 
 ### Metal Performance Shaders (MPS)
 
-MPS operations dispatch through standard Metal compute encoders. They appear in traces as compute intervals — there is no dedicated MPS schema.
+MPS operations dispatch through standard Metal compute encoders. They appear in traces as compute intervals. The `mps-hw-intervals` schema exists in the trace TOC but is often empty — the primary data source is `metal-gpu-intervals`.
 
-**Label your command buffers** — this is the single most impactful thing for trace readability:
+**Label command buffers before encoding MPS operations:**
 
 ```swift
 commandBuffer.label = "MPS: Batch MatMul 512x512"
@@ -169,9 +214,10 @@ commandBuffer.commit()
 ```rust
 // objc2-metal
 command_buffer.setLabel(ns_string!("MPS: Conv2D 3x3"));
+mps_kernel.encode(command_buffer);
 ```
 
-These labels propagate through every trace track and appear in the `label` field of imported spans.
+MPS does not set labels on the Metal objects it creates internally. If you use MPS convenience APIs that create their own command buffers, those buffers will be unlabeled. Create command buffers yourself and pass them to `encode(commandBuffer:)` to preserve your labels.
 
 **One MPS operation = multiple compute dispatches.** An `MPSMatrixMultiplication` may decompose into several passes visible as separate compute intervals on the GPU timeline. Aggregate with `focus_function` to see total cost.
 
@@ -207,6 +253,27 @@ This produces a `.gputrace` bundle openable in Xcode's Metal Debugger (not impor
 
 ### Rust + Metal (objc2-metal)
 
+Label everything — this is what makes traces useful:
+
+```rust
+let queue = device.newCommandQueue().unwrap();
+queue.setLabel(ns_string!("compute-queue"));
+
+let command_buffer = queue.commandBuffer().unwrap();
+command_buffer.setLabel(ns_string!("matmul-batch-0"));
+
+let encoder = command_buffer.computeCommandEncoder().unwrap();
+encoder.setLabel(ns_string!("dot-product"));
+encoder.pushDebugGroup(ns_string!("setup"));
+// set pipeline, buffers...
+encoder.popDebugGroup();
+encoder.pushDebugGroup(ns_string!("dispatch"));
+encoder.dispatchThreadgroups_threadsPerThreadgroup(grid, threads);
+encoder.popDebugGroup();
+encoder.endEncoding();
+command_buffer.commit();
+```
+
 Add os_signpost markers to correlate CPU and GPU timelines:
 
 ```toml
@@ -221,7 +288,7 @@ static GPU_LOGGER: OsLog = const_poi_logger!("com.myapp.gpu");
 
 fn dispatch_compute() {
     let _interval = signpost::begin_interval!(GPU_LOGGER, 1, "Compute Dispatch");
-    command_buffer.set_label(ns_string!("MyCompute"));
+    command_buffer.setLabel(ns_string!("MyCompute"));
     // encode work...
     command_buffer.commit();
 }
