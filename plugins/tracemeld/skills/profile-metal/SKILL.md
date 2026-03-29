@@ -68,6 +68,18 @@ Key flags:
 
 For long-running workloads, use `--attach <pid>` with `--time-limit` instead of `--launch`.
 
+**Environment variable gotcha:** Shell environment variables do NOT propagate to xctrace's launched child process. You must use `--env` for every variable:
+
+```bash
+# WRONG — the child process won't see MY_VAR:
+MY_VAR=1 xcrun xctrace record --launch -- ./my-binary
+
+# RIGHT:
+xcrun xctrace record --env MY_VAR=1 --launch -- ./my-binary
+```
+
+**What Metal System Trace can and cannot see:** This template captures GPU events dispatched through Metal command buffers — MPS operations, render encoders, blit encoders. It does **not** capture raw compute dispatches that bypass Metal's command buffer system. If your workload uses custom Metal compute pipelines without MPS, and the trace produces no GPU intervals, try the `Time Profiler` template instead to capture CPU-side Metal driver calls, or use Xcode's Metal Debugger for shader-level GPU profiling.
+
 ### Profiling with cargo-instruments (Rust shortcut)
 
 ```bash
