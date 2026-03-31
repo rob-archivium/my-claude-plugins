@@ -8,17 +8,27 @@ Semantic code search for Claude Code — find code by meaning, understand archit
 # 1. Install the MCP server (requires Rust toolchain)
 cargo install --git https://github.com/fnordpig/ripvec ripvec-mcp
 
+# With NVIDIA GPU acceleration (Linux, requires CUDA toolkit):
+cargo install --git https://github.com/fnordpig/ripvec ripvec-mcp --features cuda
+
 # 2. Install the plugin
 /install github:fnordpig/my-claude-plugins/plugins/ripvec
 ```
 
 The plugin checks for `ripvec-mcp` at session start and shows install instructions if missing.
 
+### What you get per platform
+
+| Platform | Default backends | Opt-in |
+|----------|-----------------|--------|
+| macOS | Metal + MLX + CPU (Accelerate) | — |
+| Linux | CPU (OpenBLAS) | `--features cuda` for NVIDIA GPU |
+
 ### Prerequisites
 
 - [Rust toolchain](https://rustup.rs/) (for building ripvec-mcp)
-- macOS: Metal GPU acceleration (default)
-- Linux: CPU or CUDA (`cargo install --git https://github.com/fnordpig/ripvec ripvec-mcp --features cuda`)
+- macOS: Xcode Command Line Tools (provides Metal framework)
+- Linux + CUDA: NVIDIA CUDA toolkit (for `--features cuda`)
 
 ## What You Get
 

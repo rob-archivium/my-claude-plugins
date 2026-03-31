@@ -7,6 +7,9 @@ if ! command -v ripvec-mcp &>/dev/null; then
 	echo "Install with:"
 	echo "  cargo install --git https://github.com/fnordpig/ripvec ripvec-mcp"
 	echo ""
+	echo "For NVIDIA GPU acceleration (Linux):"
+	echo "  cargo install --git https://github.com/fnordpig/ripvec ripvec-mcp --features cuda"
+	echo ""
 	echo "Requires Rust toolchain: https://rustup.rs"
 	exit 1
 fi
