@@ -24,22 +24,7 @@
       "category": "development",
       "tags": ["getting-started", "reference"]
     },
-    {
-      "name": "shopify-qbo",
-      "source": {
-        "source": "github",
-        "repo": "fnordpig/ShopifyQuickbooksBridge"
-      },
-      "description": "Shopify to QuickBooks Online sync and management. Sync customers, orders, and tax data; look up records; fix discrepancies; resolve customer mismatches; generate reports; and undo actions — all with propose-then-confirm safety.",
-      "version": "2.0.0",
-      "author": {
-        "name": "Robert Waugh"
-      },
-      "license": "MIT",
-      "keywords": ["shopify", "quickbooks", "sync", "invoices", "tax-mapping", "bookkeeper", "lookup", "fix", "report", "reconcile"],
-      "category": "integrations"
-    },
-    {
+{
       "name": "ripvec",
       "source": "./plugins/ripvec",
       "description": "Semantic code search — find code by meaning, understand architecture through PageRank dependency graphs. GPU-accelerated embedding on Metal (macOS) and CUDA (Linux). Includes 6 MCP tools, 3 skills, 2 commands, and a code exploration agent.",
