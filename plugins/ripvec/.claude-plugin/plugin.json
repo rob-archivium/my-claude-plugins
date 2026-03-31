@@ -1,6 +1,6 @@
 {
   "name": "ripvec",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Semantic code search — find code by meaning, understand architecture through PageRank dependency graphs. GPU-accelerated embedding on Metal (macOS) and CUDA (Linux).",
   "author": {
     "name": "Robert Waugh",

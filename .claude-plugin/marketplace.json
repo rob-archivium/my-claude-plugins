@@ -28,7 +28,7 @@
       "name": "ripvec",
       "source": "./plugins/ripvec",
       "description": "Semantic code search — find code by meaning, understand architecture through PageRank dependency graphs. GPU-accelerated embedding on Metal (macOS) and CUDA (Linux). Includes 6 MCP tools, 3 skills, 2 commands, and a code exploration agent.",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "author": {
         "name": "Robert Waugh"
       },
