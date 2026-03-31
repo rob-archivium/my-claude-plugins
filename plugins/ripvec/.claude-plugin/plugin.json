@@ -1,0 +1,13 @@
+{
+  "name": "ripvec",
+  "version": "0.1.0",
+  "description": "Semantic code search — find code by meaning, understand architecture through PageRank dependency graphs. GPU-accelerated embedding on Metal (macOS) and CUDA (Linux).",
+  "author": {
+    "name": "Robert Waugh",
+    "url": "https://github.com/fnordpig"
+  },
+  "repository": "https://github.com/fnordpig/ripvec",
+  "license": "MIT",
+  "keywords": ["search", "semantic", "embeddings", "code-search", "pagerank", "architecture", "tree-sitter", "metal", "cuda", "gpu"],
+  "mcpServers": "./.mcp.json"
+}
