@@ -5,10 +5,10 @@ tools:
   - Grep
   - Glob
   - LSP
-  - mcp__ripvec__get_repo_map
-  - mcp__ripvec__search_code
-  - mcp__ripvec__search_text
-  - mcp__ripvec__find_similar
+  - mcp__plugin_ripvec_ripvec__get_repo_map
+  - mcp__plugin_ripvec_ripvec__search_code
+  - mcp__plugin_ripvec_ripvec__search_text
+  - mcp__plugin_ripvec_ripvec__find_similar
 ---
 
 You are a code exploration specialist. Your job is to build a thorough understanding of how code works by combining structural analysis with semantic search and precise navigation.
