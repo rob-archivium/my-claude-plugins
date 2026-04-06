@@ -23,11 +23,6 @@ fi
 BINARY="${BIN_DIR}/ripvec-mcp"
 VERSION_FILE="${BIN_DIR}/.version"
 
-# Fast path: binary exists and version matches → exec immediately
-if [[ -x "$BINARY" ]] && [[ -f "$VERSION_FILE" ]] && [[ "$(cat "$VERSION_FILE")" == "$RIPVEC_VERSION" ]]; then
-	exec "$BINARY" "$@"
-fi
-
 # Detect platform
 OS="$(uname -s)"
 ARCH="$(uname -m)"
@@ -44,9 +39,23 @@ Linux-aarch64) TARGET="aarch64-unknown-linux-gnu" ;;
 	;;
 esac
 
-# Check for CUDA preference
-if [[ "${RIPVEC_CUDA:-}" == "1" ]] && [[ "$OS" == "Linux" ]]; then
-	TARGET="${TARGET}-cuda"
+# Auto-detect CUDA: if nvidia-smi exists, the CUDA runtime is installed.
+# Can be overridden: RIPVEC_CUDA=0 to force CPU, RIPVEC_CUDA=1 to force CUDA.
+if [[ "$OS" == "Linux" ]]; then
+	if [[ "${RIPVEC_CUDA:-auto}" == "auto" ]]; then
+		if command -v nvidia-smi &>/dev/null; then
+			TARGET="${TARGET}-cuda"
+		fi
+	elif [[ "${RIPVEC_CUDA:-}" == "1" ]]; then
+		TARGET="${TARGET}-cuda"
+	fi
+fi
+
+EXPECTED="${RIPVEC_VERSION}:${TARGET}"
+
+# Fast path: binary exists, version+target match → exec immediately
+if [[ -x "$BINARY" ]] && [[ -f "$VERSION_FILE" ]] && [[ "$(cat "$VERSION_FILE")" == "$EXPECTED" ]]; then
+	exec "$BINARY" "$@"
 fi
 
 ARCHIVE="ripvec-v${RIPVEC_VERSION}-${TARGET}.tar.gz"
@@ -82,7 +91,7 @@ if [[ -f "${EXTRACT_DIR}/ripvec" ]]; then
 fi
 
 # Record version for fast-path check
-echo "$RIPVEC_VERSION" >"$VERSION_FILE"
+echo "${RIPVEC_VERSION}:${TARGET}" >"$VERSION_FILE"
 
 echo "ripvec-mcp v${RIPVEC_VERSION} installed to ${BIN_DIR}" >&2
 
