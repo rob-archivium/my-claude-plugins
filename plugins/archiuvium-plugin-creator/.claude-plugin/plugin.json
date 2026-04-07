@@ -1,9 +1,0 @@
-{
-  "name": "archiuvium-plugin-creator",
-  "description": "Kitchen-sink template plugin demonstrating every Claude Code plugin component type. Guides users through creating new plugins from scratch.",
-  "author": {
-    "name": "Robert Waugh"
-  },
-  "license": "MIT",
-  "keywords": ["template", "plugin-creation", "scaffolding"]
-}

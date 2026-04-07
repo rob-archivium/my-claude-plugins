@@ -12,19 +12,6 @@
   },
   "plugins": [
     {
-      "name": "archiuvium-plugin-creator",
-      "source": "./plugins/archiuvium-plugin-creator",
-      "description": "Kitchen-sink template plugin demonstrating every Claude Code plugin component type. Includes a skill that guides users through creating new plugins from scratch, with working examples of skills, commands, agents, hooks, and MCP servers.",
-      "version": "0.1.0",
-      "author": {
-        "name": "Robert Waugh"
-      },
-      "license": "MIT",
-      "keywords": ["template", "plugin-creation", "scaffolding", "skills", "commands", "agents", "hooks", "mcp"],
-      "category": "development",
-      "tags": ["getting-started", "reference"]
-    },
-{
       "name": "ripvec",
       "source": "./plugins/ripvec",
       "description": "Semantic code search + multi-language LSP — find code by meaning, navigate with function-level PageRank, get syntax diagnostics across 21 languages. GPU-accelerated (Metal/CUDA). Includes 7 MCP tools, LSP server (10 operations), 3 skills, 3 commands, and a code exploration agent.",
