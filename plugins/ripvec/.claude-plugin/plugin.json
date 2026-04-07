@@ -1,13 +1,14 @@
 {
   "name": "ripvec",
-  "version": "0.2.0",
-  "description": "Semantic code search — find code by meaning, understand architecture through PageRank dependency graphs. GPU-accelerated embedding on Metal (macOS) and CUDA (Linux).",
+  "version": "0.12.0",
+  "description": "Semantic code search + multi-language LSP — find code by meaning, navigate with function-level PageRank, get syntax diagnostics across 21 languages. GPU-accelerated (Metal/CUDA).",
   "author": {
     "name": "Robert Waugh",
     "url": "https://github.com/fnordpig"
   },
   "repository": "https://github.com/fnordpig/ripvec",
   "license": "MIT",
-  "keywords": ["search", "semantic", "embeddings", "code-search", "pagerank", "architecture", "tree-sitter", "metal", "cuda", "gpu"],
-  "mcpServers": "./.mcp.json"
+  "keywords": ["search", "semantic", "lsp", "code-intelligence", "embeddings", "pagerank", "tree-sitter", "metal", "cuda", "gpu"],
+  "mcpServers": "./.mcp.json",
+  "lspServers": "./.lsp.json"
 }

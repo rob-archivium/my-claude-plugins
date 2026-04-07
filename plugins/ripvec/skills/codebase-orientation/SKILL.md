@@ -9,10 +9,10 @@ When you need to understand how a project is structured — which files are cent
 
 ## Why this matters
 
-Reading files one by one to understand architecture is slow and expensive. A single `get_repo_map` call returns a PageRank-weighted overview showing:
-- Which files are structurally central (imported by many others)
+Reading files one by one to understand architecture is slow and expensive. A single `get_repo_map` call returns a function-level PageRank overview showing:
+- Which files and functions are structurally central (called by many others)
 - Key definitions (traits, structs, functions) with signatures
-- Dependency flow (who calls whom)
+- Call graph flow (who calls whom at the function level)
 
 This replaces 10+ sequential Read operations with one tool call.
 
@@ -30,8 +30,14 @@ get_repo_map(focus_file: "src/auth/middleware.ts", max_tokens: 1500)
 ```
 Topic-sensitive PageRank concentrates on the focus file's neighborhood — what it depends on and what depends on it.
 
-**Step 3: Read the top-ranked files**
-Use LSP `documentSymbol` on the 2-3 highest-ranked files for detailed symbol listings, then `Read` for implementation details.
+**Step 3: Use ripvec's LSP for detailed navigation**
+
+ripvec provides LSP code intelligence for all 21 supported languages. After identifying key files from the repo map:
+
+- `LSP documentSymbol` — get the full symbol outline of a file (functions, classes, methods). Works for ALL languages ripvec supports including bash, HCL, TOML, Ruby, Kotlin, Swift, Scala.
+- `LSP goToDefinition` — jump to where a symbol is defined
+- `LSP hover` — see scope chain and context for a symbol
+- `LSP incomingCalls` / `outgoingCalls` — trace call chains through the function-level graph
 
 ## Examples across languages
 
@@ -41,16 +47,16 @@ Use LSP `documentSymbol` on the 2-3 highest-ranked files for detailed symbol lis
 **Django project**: "Where do I start understanding this app?"
 → `get_repo_map` shows `urls.py` and `models.py` as most-imported, `views.py` as primary caller — read in that order
 
+**Terraform infrastructure**: "What resources depend on what?"
+→ `get_repo_map` shows which `.tf` files are central. `LSP documentSymbol` lists all resource/data/variable blocks per file. ripvec provides this — no other LSP covers HCL.
+
 **React + Express full-stack**: "How does the frontend talk to the backend?"
 → `get_repo_map` reveals the API boundary: `api/routes/index.ts` as the hub, `src/hooks/useApi.ts` as the frontend entry point
-
-**dbt project**: "Which models are most critical?"
-→ `get_repo_map` PageRanks the models — the most-referenced staging models rank highest, showing the dependency spine
 
 ## When NOT to use this
 
 - You already know the file you need → just `Read` it
 - You need an exact string → use `Grep`
-- You need a specific symbol definition → use LSP `goToDefinition`
+- You need a specific symbol definition → use `LSP goToDefinition`
 
 Orientation is for the "I don't know where to start" moment. Once oriented, switch to precise tools.
