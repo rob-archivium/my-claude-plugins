@@ -1,0 +1,34 @@
+{
+  "ripvec": {
+    "command": "${CLAUDE_PLUGIN_ROOT}/bin/ripvec-mcp",
+    "args": ["--lsp"],
+    "extensionToLanguage": {
+      ".rs": "rust",
+      ".py": "python",
+      ".js": "javascript",
+      ".jsx": "javascript",
+      ".ts": "typescript",
+      ".tsx": "typescript",
+      ".go": "go",
+      ".java": "java",
+      ".c": "c",
+      ".h": "c",
+      ".cpp": "cpp",
+      ".cc": "cpp",
+      ".cxx": "cpp",
+      ".hpp": "cpp",
+      ".sh": "bash",
+      ".bash": "bash",
+      ".bats": "bash",
+      ".rb": "ruby",
+      ".tf": "hcl",
+      ".tfvars": "hcl",
+      ".hcl": "hcl",
+      ".kt": "kotlin",
+      ".kts": "kotlin",
+      ".swift": "swift",
+      ".scala": "scala",
+      ".toml": "toml"
+    }
+  }
+}
