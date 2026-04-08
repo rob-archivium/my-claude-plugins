@@ -15,7 +15,7 @@
       "name": "ripvec",
       "source": "./plugins/ripvec",
       "description": "Semantic code search + multi-language LSP — find code by meaning, navigate with function-level PageRank, get syntax diagnostics across 21 languages. GPU-accelerated (Metal/CUDA). Includes 7 MCP tools, LSP server (10 operations), 3 skills, 3 commands, and a code exploration agent.",
-      "version": "0.12.0",
+      "version": "0.12.1",
       "author": {
         "name": "Robert Waugh"
       },
