@@ -7,6 +7,14 @@ description: "Use before making significant code changes to understand the blast
 
 Before changing a function signature, moving a module, or refactoring an API — understand what depends on it. ripvec provides the full blast radius through its MCP tools and LSP operations.
 
+## Tool discovery
+
+ripvec's MCP tools are deferred — use `ToolSearch` to load them before calling:
+```
+ToolSearch("select:mcp__ripvec__get_repo_map,mcp__ripvec__search_code,mcp__ripvec__find_similar")
+```
+If running as a plugin, tools may be namespaced as `mcp__plugin_ripvec_ripvec__*` — search for `ripvec` to find them.
+
 ## The three-tool pattern
 
 **1. Structural dependencies** — what files and functions depend on what you're changing:

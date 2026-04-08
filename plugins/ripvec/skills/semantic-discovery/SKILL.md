@@ -7,6 +7,14 @@ description: "Use when searching for code by concept or behavior rather than exa
 
 When someone asks "find the code that handles database connection pooling" — they don't mean grep for "connection pooling". They mean: find the actual implementation, wherever it lives, whatever it's called.
 
+## Tool discovery
+
+ripvec's MCP tools are deferred — use `ToolSearch` to load them before calling:
+```
+ToolSearch("select:mcp__ripvec__search_code,mcp__ripvec__search_text,mcp__ripvec__find_similar")
+```
+If running as a plugin, tools may be namespaced as `mcp__plugin_ripvec_ripvec__*` — search for `ripvec` to find them.
+
 ## The decision: Grep vs search_code vs LSP
 
 | User says | Tool | Why |

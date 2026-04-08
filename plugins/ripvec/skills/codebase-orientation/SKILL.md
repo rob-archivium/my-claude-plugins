@@ -7,6 +7,14 @@ description: "Use when starting work on unfamiliar code, asked about project str
 
 When you need to understand how a project is structured — which files are central, what depends on what, where the key abstractions live — use `get_repo_map` before reading individual files.
 
+## Tool discovery
+
+ripvec's MCP tools are deferred — use `ToolSearch` to load them before calling:
+```
+ToolSearch("select:mcp__ripvec__get_repo_map,mcp__ripvec__search_code")
+```
+If running as a plugin, tools may be namespaced as `mcp__plugin_ripvec_ripvec__*` — search for `ripvec` to find them.
+
 ## Why this matters
 
 Reading files one by one to understand architecture is slow and expensive. A single `get_repo_map` call returns a function-level PageRank overview showing:
