@@ -14,7 +14,11 @@
       ".kts": "kotlin",
       ".swift": "swift",
       ".scala": "scala",
-      ".toml": "toml"
+      ".toml": "toml",
+      ".json": "json",
+      ".yaml": "yaml",
+      ".yml": "yaml",
+      ".md": "markdown"
     }
   }
 }
