@@ -102,8 +102,9 @@ fi
 
 EXPECTED="${RIPVEC_VERSION}:${TARGET}"
 
-# Fast path: binary exists, version+target match → exec immediately
+# Fast path: binary exists, version+target match
 if [[ -x "$BINARY" ]] && [[ -f "$VERSION_FILE" ]] && [[ "$(cat "$VERSION_FILE")" == "$EXPECTED" ]]; then
+	if [[ "${1:-}" == "--install-only" ]]; then exit 0; fi
 	exec "$BINARY" "$@"
 fi
 
@@ -144,5 +145,8 @@ echo "${RIPVEC_VERSION}:${TARGET}" >"$VERSION_FILE"
 
 echo "ripvec-mcp v${RIPVEC_VERSION} installed to ${BIN_DIR}" >&2
 
-# Exec into the binary — replaces this shell process
+# --install-only: exit after download (used by .mcp.json inline command)
+if [[ "${1:-}" == "--install-only" ]]; then exit 0; fi
+
+# Exec into the binary — replaces this shell process (used by .lsp.json)
 exec "$BINARY" "$@"
