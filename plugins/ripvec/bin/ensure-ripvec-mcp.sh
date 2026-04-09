@@ -49,6 +49,19 @@ if [[ "$OS" == "Linux" ]]; then
 	fi
 fi
 
+# --update: force immediate version check, bypassing cache
+if [[ "${1:-}" == "--update" ]]; then
+	rm -f "$LAST_CHECK_FILE"
+	shift
+fi
+
+# --install-only: download binary without exec (used by hooks)
+INSTALL_ONLY=false
+if [[ "${1:-}" == "--install-only" ]]; then
+	INSTALL_ONLY=true
+	shift
+fi
+
 # Fetch latest version (cached for CHECK_INTERVAL)
 get_latest_version() {
 	local now
@@ -95,7 +108,7 @@ EXPECTED="${RIPVEC_VERSION}:${TARGET}"
 
 # Fast path: binary exists, version+target match
 if [[ -x "$BINARY" ]] && [[ -f "$VERSION_FILE" ]] && [[ "$(cat "$VERSION_FILE")" == "$EXPECTED" ]]; then
-	if [[ "${1:-}" == "--install-only" ]]; then exit 0; fi
+	$INSTALL_ONLY && exit 0
 	exec "$BINARY" "$@"
 fi
 
@@ -127,5 +140,5 @@ chmod +x "$BINARY"
 echo "${RIPVEC_VERSION}:${TARGET}" >"$VERSION_FILE"
 echo "ripvec-mcp v${RIPVEC_VERSION} installed." >&2
 
-if [[ "${1:-}" == "--install-only" ]]; then exit 0; fi
+$INSTALL_ONLY && exit 0
 exec "$BINARY" "$@"
