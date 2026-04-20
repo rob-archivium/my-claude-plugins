@@ -15,7 +15,7 @@
       "name": "ripvec",
       "source": "./plugins/ripvec",
       "description": "Semantic code search + generic multi-language LSP. 19 grammars, 30 extensions, function-level PageRank, hybrid BM25+vector ranking, GPU-accelerated (Metal/CUDA). 7 MCP tools, 10 LSP operations, 3 skills, 3 commands, code exploration agent.",
-      "version": "0.13.11",
+      "version": "0.13.13",
       "author": {
         "name": "Robert Waugh"
       },
