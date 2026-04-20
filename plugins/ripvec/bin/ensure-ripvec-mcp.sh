@@ -125,6 +125,19 @@ cp "${EXTRACT_DIR}/ripvec-mcp" "$BINARY"
 chmod +x "$BINARY"
 [[ -f "${EXTRACT_DIR}/ripvec" ]] && cp "${EXTRACT_DIR}/ripvec" "${BIN_DIR}/ripvec" && chmod +x "${BIN_DIR}/ripvec"
 
+# macOS: the release binary ships ad-hoc linker-signed, which Gatekeeper
+# silently SIGKILLs when launched from a non-TTY parent (Claude Code's
+# MCP stdio child). Strip the quarantine xattr and re-ad-hoc-sign under
+# the current user's trust scope so the binary actually runs.
+if [[ "$OS" == "Darwin" ]] && command -v codesign &>/dev/null; then
+	xattr -dr com.apple.quarantine "$BINARY" 2>/dev/null || true
+	codesign --force --sign - "$BINARY" 2>/dev/null || true
+	if [[ -x "${BIN_DIR}/ripvec" ]]; then
+		xattr -dr com.apple.quarantine "${BIN_DIR}/ripvec" 2>/dev/null || true
+		codesign --force --sign - "${BIN_DIR}/ripvec" 2>/dev/null || true
+	fi
+fi
+
 echo "${RIPVEC_VERSION}:${TARGET}" >"$VERSION_FILE"
 echo "ripvec-mcp v${RIPVEC_VERSION} installed." >&2
 
