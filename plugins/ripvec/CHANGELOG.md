@@ -3,16 +3,47 @@
 ## 0.13.18 (2026-04-25)
 
 ### Fixed
-- MCP launcher now resolves the plugin root correctly on both Claude Code
-  and Codex. The previous shim relied on `${CLAUDE_PLUGIN_ROOT}` being
-  exported as an env var, but Claude only substitutes that token in
-  `.mcp.json` field values — it does not export it to the MCP child. The
-  shim therefore fell through to `$PWD` (the project directory) and tried
-  to exec `./bin/ensure-ripvec-mcp.sh` from a path that does not exist,
-  producing `Failed to reconnect to plugin:ripvec:ripvec`. Now passes the
-  substituted path through an `env.PLUGIN_ROOT_HINT` field; bash uses it
-  if it looks like a real path, else falls back to `$PWD` (which Codex
-  rewrites to the plugin root via `cwd:"."`).
+- MCP launcher now resolves the plugin root correctly on both Claude
+  Code and Codex.
+
+  **Root cause.** The previous shim used
+  `root="${CLAUDE_PLUGIN_ROOT:-$PWD}"` inside the bash `-lc` string.
+  Claude's preprocessor substitutes `${VAR}` patterns in `args` *before*
+  bash runs, but it only knows about `${CLAUDE_PLUGIN_ROOT}` as a bare
+  token — when given a `${VAR:-default}` form it appears to emit the
+  default verbatim. So Claude substituted the whole expression to the
+  literal string `$PWD`, bash then evaluated `$PWD` = the project
+  working directory (Claude does not rewrite `cwd:"."` to plugin root
+  the way Codex does), and `./bin/ensure-ripvec-mcp.sh` failed to
+  resolve. Visible symptom: `Failed to reconnect to
+  plugin:ripvec:ripvec` with stderr
+  `bin/ensure-ripvec-mcp.sh: No such file or directory` rooted at the
+  user's project dir.
+
+  **Fix.** Use the bare token `${CLAUDE_PLUGIN_ROOT}` and do the
+  fallback in a separate bash statement that Claude's preprocessor
+  doesn't touch:
+
+  ```bash
+  set -eo pipefail
+  root="${CLAUDE_PLUGIN_ROOT}"
+  case "$root" in ''|*'$'*) root="$PWD" ;; esac
+  cd "$root"
+  exec ./bin/ensure-ripvec-mcp.sh "$@"
+  ```
+
+  - **Claude:** preprocessor substitutes `${CLAUDE_PLUGIN_ROOT}` → real
+    plugin path; bash's `case` falls through; `cd` lands at plugin root.
+  - **Codex:** no preprocessor; bash expands the literal
+    `${CLAUDE_PLUGIN_ROOT}` against the child env (Codex's stdio
+    launcher uses `env_clear()` and does not pass `CLAUDE_PLUGIN_ROOT`)
+    → empty; `case ''` arm fires → `root=$PWD`; Codex has rewritten
+    `cwd:"."` to the plugin root, so `$PWD` is correct.
+
+  `set -u` removed deliberately — Codex's empty-env expansion of
+  `${CLAUDE_PLUGIN_ROOT}` would abort under `-u`. The `case '*'$'*'`
+  arm is a belt-and-suspenders fallback for the unlikely case where
+  Claude ever passes the token through literally.
 
 ## 0.12.0 (2026-04-07)
 
