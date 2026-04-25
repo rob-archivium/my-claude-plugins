@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.13.18 (2026-04-25)
+
+### Fixed
+- MCP launcher now resolves the plugin root correctly on both Claude Code
+  and Codex. The previous shim relied on `${CLAUDE_PLUGIN_ROOT}` being
+  exported as an env var, but Claude only substitutes that token in
+  `.mcp.json` field values — it does not export it to the MCP child. The
+  shim therefore fell through to `$PWD` (the project directory) and tried
+  to exec `./bin/ensure-ripvec-mcp.sh` from a path that does not exist,
+  producing `Failed to reconnect to plugin:ripvec:ripvec`. Now passes the
+  substituted path through an `env.PLUGIN_ROOT_HINT` field; bash uses it
+  if it looks like a real path, else falls back to `$PWD` (which Codex
+  rewrites to the plugin root via `cwd:"."`).
+
 ## 0.12.0 (2026-04-07)
 
 ### LSP Server
