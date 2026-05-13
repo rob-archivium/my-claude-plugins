@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.13.25 (2026-05-13)
+
+### Added
+- ripvec skills now document native LSP and ripvec MCP LSP interoperability.
+  Semantic search, repo-map, and similar-code results should be grounded by
+  passing `results[].lsp_location` to native Claude Code LSP tools or Codex's
+  ripvec MCP LSP tools before making symbol-sensitive edits.
+
 ## 0.13.24 (2026-05-13)
 
 ### Added

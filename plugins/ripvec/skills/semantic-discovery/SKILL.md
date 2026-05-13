@@ -13,6 +13,10 @@ MCP tools are deferred. Load before calling:
 ```
 ToolSearch("select:mcp__ripvec__search_code,mcp__ripvec__get_repo_map,mcp__ripvec__find_similar,mcp__ripvec__index_status")
 ```
+For grounding, also load the LSP-shaped MCP tools when native LSP is absent:
+```
+ToolSearch("select:mcp__ripvec__lsp_document_symbols,mcp__ripvec__lsp_workspace_symbols,mcp__ripvec__lsp_hover,mcp__ripvec__lsp_goto_definition,mcp__ripvec__lsp_references,mcp__ripvec__lsp_prepare_call_hierarchy,mcp__ripvec__lsp_incoming_calls,mcp__ripvec__lsp_outgoing_calls")
+```
 Plugin namespace: `mcp__plugin_ripvec_ripvec__*`. Call `index_status` first — wait if indexing.
 
 ## When to use
@@ -25,10 +29,11 @@ Plugin namespace: `mcp__plugin_ripvec_ripvec__*`. Call `index_status` first — 
 
 ```
 search_code("concept")          → candidates with file:line
-LSP documentSymbol(file)        → full outline of the best match
-LSP goToDefinition(position)    → jump to the definition
-LSP hover(position)             → see scope chain + context
-LSP findReferences(position)    → all usage sites
+ground results[].lsp_location   → native LSP or ripvec MCP LSP
+document symbols(file)          → full outline of the best match
+go to definition(position)      → jump to the definition
+hover(position)                 → see scope chain + context
+references(position)            → all usage sites
 ```
 
 ### Step 1: Search by meaning
@@ -40,24 +45,46 @@ search_code("authentication middleware that validates JWT tokens")
 Results are ranked by relevance × structural importance (function-level PageRank).
 Functions that many others depend on rank higher.
 
-### Step 2: Examine the best match
+### Step 2: Ground the best match
+
+Every ripvec semantic result includes an `lsp_location` shape with file path,
+line, character, and range data. Do not treat semantic similarity as proof of
+symbol identity. Ground the candidate before editing or explaining exact
+behavior:
+
+- In Claude Code, pass `results[].lsp_location` to native LSP tools such as
+  `documentSymbol`, `goToDefinition`, `hover`, `findReferences`, and call
+  hierarchy.
+- In Codex or any host without native LSP, pass the same `lsp_location` data to
+  ripvec MCP tools: `lsp_document_symbols`, `lsp_goto_definition`,
+  `lsp_hover`, `lsp_references`, `lsp_prepare_call_hierarchy`,
+  `lsp_incoming_calls`, and `lsp_outgoing_calls`.
+- The ripvec MCP LSP responses return both `results[]` in ripvec's familiar
+  shape and raw `lsp.raw_response`, so their results can feed back into
+  semantic tools or another LSP call.
+
+### Step 3: Examine the best match
 
 ```
-LSP documentSymbol(file: "auth/middleware.rs")
+lsp_document_symbols(file_path: "auth/middleware.rs")
 ```
 
 Shows every function, struct, field, constant in the file. Decide which symbol
-to investigate. ripvec's LSP covers all 19 supported languages — bash, HCL,
-TOML, Ruby, Kotlin, Swift, Scala, JSON, YAML, Markdown included.
+to investigate. ripvec's LSP covers all supported languages — bash, HCL, TOML,
+Ruby, Kotlin, Swift, Scala, JSON, YAML, Markdown included.
 
-### Step 3: Navigate deeper
+### Step 4: Navigate deeper
 
 ```
-LSP goToDefinition(file, line, char)  → jump to where a called function lives
-LSP incomingCalls(file, line, char)   → who calls this function
-LSP outgoingCalls(file, line, char)   → what this function calls
+lsp_goto_definition(lsp_location)     → jump to where a called function lives
+lsp_incoming_calls(call_item)         → who calls this function
+lsp_outgoing_calls(call_item)         → what this function calls
 find_similar(file, line)              → parallel implementations elsewhere
 ```
+
+Native LSP and ripvec MCP LSP are interchangeable at this layer. Use whichever
+the host exposes, but preserve the grounding loop: semantic discovery →
+`lsp_location` → LSP resolution → edit/read only after the symbol is grounded.
 
 ## Grep vs search_code
 
@@ -73,3 +100,5 @@ find_similar(file, line)              → parallel implementations elsewhere
 - Use Grep for conceptual queries
 - Read files sequentially hoping to find something
 - Skip `index_status` check (empty results during indexing)
+- Edit based only on vector similarity without grounding through native LSP or
+  ripvec MCP LSP

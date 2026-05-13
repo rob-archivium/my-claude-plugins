@@ -13,6 +13,10 @@ MCP tools are deferred. Load before calling:
 ```
 ToolSearch("select:mcp__ripvec__get_repo_map,mcp__ripvec__search_code,mcp__ripvec__find_similar,mcp__ripvec__find_duplicates,mcp__ripvec__index_status")
 ```
+For LSP grounding on hosts without native LSP, also load:
+```
+ToolSearch("select:mcp__ripvec__lsp_document_symbols,mcp__ripvec__lsp_hover,mcp__ripvec__lsp_goto_definition,mcp__ripvec__lsp_references,mcp__ripvec__lsp_prepare_call_hierarchy,mcp__ripvec__lsp_incoming_calls,mcp__ripvec__lsp_outgoing_calls")
+```
 Plugin namespace: `mcp__plugin_ripvec_ripvec__*`. Call `index_status` first — wait if indexing.
 
 ## When to use
@@ -27,18 +31,22 @@ Plugin namespace: `mcp__plugin_ripvec_ripvec__*`. Call `index_status` first — 
 ## The pattern
 
 ```
-LSP documentSymbol(file)           → see what's in the file
-LSP incomingCalls(function)        → who depends on this
-LSP outgoingCalls(function)        → what this depends on
+document symbols(file)             → see what's in the file
+incoming calls(function)           → who depends on this
+outgoing calls(function)           → what this depends on
 get_repo_map(focus_file: file)     → structural neighborhood
 find_similar(file, line)           → parallel implementations
 find_duplicates(threshold: 0.85)   → codebase-wide near-copies
 ```
 
+Use native LSP in Claude Code when it is available. Use ripvec MCP LSP tools
+in Codex or any host without native LSP. Both flows consume the same
+`lsp_location` shape returned by ripvec semantic tools and repo-map entries.
+
 ### Step 1: Understand the local structure
 
 ```
-LSP documentSymbol(file: "src/auth/middleware.rs")
+lsp_document_symbols(file_path: "src/auth/middleware.rs")
 ```
 
 See every function, field, constant. Identify the function being changed.
@@ -46,12 +54,14 @@ See every function, field, constant. Identify the function being changed.
 ### Step 2: Trace the call graph
 
 ```
-LSP incomingCalls(file, line, char)   → every function that calls this
-LSP outgoingCalls(file, line, char)   → every function this calls
+lsp_prepare_call_hierarchy(lsp_location)  → call hierarchy item for symbol
+lsp_incoming_calls(call_item)             → every function that calls this
+lsp_outgoing_calls(call_item)             → every function this calls
+lsp_references(lsp_location)              → all usage sites
 ```
 
 These use ripvec's function-level call graph — backed by PageRank, not
-just text matching. Available for all 19 supported languages.
+just text matching. Available for all supported languages.
 
 ### Step 3: See the structural neighborhood
 
@@ -83,8 +93,8 @@ Similar patterns (0.85-0.90) may need coordinated changes.
 
 ## Safety checklist before a structural change
 
-- [ ] `LSP incomingCalls` — identify all direct callers
-- [ ] `LSP findReferences` — all usage sites (including type annotations)
+- [ ] Native `incomingCalls` or ripvec `lsp_incoming_calls` — identify all direct callers
+- [ ] Native `findReferences` or ripvec `lsp_references` — all usage sites (including type annotations)
 - [ ] `find_similar` — parallel implementations needing the same change
 - [ ] `get_repo_map(focus_file)` — structural neighborhood
 - [ ] Run tests on the dependency neighborhood, not just the changed file
@@ -95,3 +105,5 @@ Similar patterns (0.85-0.90) may need coordinated changes.
 - Assume only one file is affected
 - Skip `find_similar` — copy-paste code is everywhere
 - Use Grep to find "who uses this" — use LSP `findReferences`
+- Treat `search_code` or `get_repo_map` results as fully grounded until their
+  `lsp_location` has been resolved through native LSP or ripvec MCP LSP
