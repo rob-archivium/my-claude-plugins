@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.13.27 (2026-05-13)
+
+### Fixed
+- Fixed MLX driver unpadded batching so token tensors remain flat while
+  attention masks stay padded, resolving reshape failures in BGE-small model
+  tests.
+- Fixed MLX layer normalization affine parameter shape handling for
+  `mlx_rs::fast::layer_norm`.
+
 ## 0.13.26 (2026-05-13)
 
 ### Fixed
