@@ -1,6 +1,6 @@
 {
   "name": "ripvec",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Semantic code search + generic multi-language LSP. 20 grammars, 37 extensions, live indexing dashboard with stable atlas viewport, RDF/OWL chunking, function-level PageRank, hybrid BM25+vector ranking, GPU-accelerated (Metal/CUDA).",
   "author": {
     "name": "Robert Waugh",
