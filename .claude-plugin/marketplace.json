@@ -14,8 +14,8 @@
     {
       "name": "ripvec",
       "source": "./plugins/ripvec",
-      "description": "Semantic code search + generic multi-language LSP. 20 grammars, 37 extensions, live indexing dashboard with stable atlas viewport, RDF/OWL chunking, function-level PageRank, hybrid BM25+vector ranking, GPU-accelerated (Metal/CUDA). 7 MCP tools, 10 LSP operations, 3 skills, 3 commands, code exploration agent.",
-      "version": "1.2.0",
+      "description": "Semantic code + document search. Static Model2Vec bi-encoder (potion-base-32M default) with path-enriched BM25, function-level PageRank, and L-12 cross-encoder rerank auto-gated to prose. 20 tree-sitter grammars, 37 extensions, MCP + LSP server, GPU-accelerated transformer engines optional. Hits perfect NDCG@10 on prose; matches semble on Python within 0.008.",
+      "version": "1.3.0",
       "author": {
         "name": "Robert Waugh"
       },
