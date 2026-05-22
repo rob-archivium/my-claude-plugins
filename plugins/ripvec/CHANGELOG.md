@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.1.1 (2026-05-22)
+
+### Changed
+- Tracks ripvec engine v3.1.1.
+- Online reconcile now **selectively rebuilds** the in-memory index instead of doing a full
+  rebuild on every detected change. Warm-dirty cost on a 5K-chunk corpus drops from
+  ~270 ms–1 s (3.1.0 full rebuild) to ~50–100 ms (3.1.1 selective). Cold-start unchanged.
+
+### Yanked upstream
+- ripvec engine 3.1.0 is yanked on crates.io — superseded by 3.1.1 (same correctness, worse
+  perf on every change). The plugin's auto-updater fetches the latest GitHub release binary,
+  which is now 3.1.1, so existing plugin users get the fix transparently on next bootstrap.
+
 ## 3.1.0 (2026-05-22)
 
 ### Changed
