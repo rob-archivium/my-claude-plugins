@@ -7,12 +7,10 @@ tools:
   - LSP
   - mcp__plugin_ripvec_ripvec__find_duplicates
   - mcp__plugin_ripvec_ripvec__find_similar
-  - mcp__plugin_ripvec_ripvec__index_status
   - mcp__plugin_ripvec_ripvec__lsp_document_symbols
   - mcp__plugin_ripvec_ripvec__lsp_references
   - mcp__ripvec__find_duplicates
   - mcp__ripvec__find_similar
-  - mcp__ripvec__index_status
   - mcp__ripvec__lsp_document_symbols
   - mcp__ripvec__lsp_references
 ---
@@ -21,7 +19,7 @@ Detect duplicate and near-duplicate code using ripvec's embedding similarity.
 
 **Tool resolution.** The `tools:` frontmatter lists ripvec under two Claude Code namespaces (`mcp__ripvec__*` project + `mcp__plugin_ripvec_ripvec__*` plugin). On Codex, call the bare names (`find_duplicates`, `find_similar`, etc.) directly. Use native `LSP()` when Claude has a language server configured; otherwise fall back to ripvec MCP `lsp_*` tools.
 
-**Check index readiness.** Call `index_status` first. Wait if indexing.
+**Index readiness.** The engine auto-reconciles on every search — no readiness check needed before calling `find_duplicates`.
 
 ## Process
 

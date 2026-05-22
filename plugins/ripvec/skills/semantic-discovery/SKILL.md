@@ -15,7 +15,7 @@ ripvec exposes the same tool surface to both hosts; only the call syntax differs
 
 ```
 ToolSearch("ripvec")                            # discover the active namespace
-ToolSearch("select:mcp__ripvec__search,mcp__ripvec__get_repo_map,mcp__ripvec__find_similar,mcp__ripvec__index_status")
+ToolSearch("select:mcp__ripvec__search,mcp__ripvec__get_repo_map,mcp__ripvec__find_similar")
 ```
 
 The namespace is either `mcp__ripvec__*` (project-level `.mcp.json`) or `mcp__plugin_ripvec_ripvec__*` (plugin install). `ToolSearch("ripvec")` returns whichever your session has. For LSP-shaped grounding tools:

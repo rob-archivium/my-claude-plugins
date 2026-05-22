@@ -7,13 +7,7 @@ Find code that is duplicated or highly similar across the codebase. Uses ripvec'
 
 ## How to find duplicates
 
-1. Check index readiness:
-
-```
-index_status()
-```
-
-2. Use `get_repo_map` to identify the most important functions (highest PageRank).
+1. Use `get_repo_map` to identify the most important functions (highest PageRank). The engine auto-reconciles file changes on every call — no readiness check needed.
 
 3. For workspace-wide near-duplicate detection:
 

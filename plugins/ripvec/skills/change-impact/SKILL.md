@@ -15,7 +15,7 @@ ripvec exposes the same tool surface to both hosts; only the call syntax differs
 
 ```
 ToolSearch("ripvec")                            # discover the active namespace
-ToolSearch("select:mcp__ripvec__get_repo_map,mcp__ripvec__search,mcp__ripvec__find_similar,mcp__ripvec__find_duplicates,mcp__ripvec__index_status")
+ToolSearch("select:mcp__ripvec__get_repo_map,mcp__ripvec__search,mcp__ripvec__find_similar,mcp__ripvec__find_duplicates")
 ```
 
 Use the **native `LSP()` tool** for call-hierarchy and reference operations when a language server is configured. The ripvec MCP `lsp_*` tools are the fallback when there is no native LSP wired up:

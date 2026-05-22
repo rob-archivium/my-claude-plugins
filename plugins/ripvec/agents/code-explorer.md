@@ -9,7 +9,6 @@ tools:
   - mcp__plugin_ripvec_ripvec__get_repo_map
   - mcp__plugin_ripvec_ripvec__search
   - mcp__plugin_ripvec_ripvec__find_similar
-  - mcp__plugin_ripvec_ripvec__index_status
   - mcp__plugin_ripvec_ripvec__lsp_document_symbols
   - mcp__plugin_ripvec_ripvec__lsp_workspace_symbols
   - mcp__plugin_ripvec_ripvec__lsp_hover
@@ -21,7 +20,6 @@ tools:
   - mcp__ripvec__get_repo_map
   - mcp__ripvec__search
   - mcp__ripvec__find_similar
-  - mcp__ripvec__index_status
   - mcp__ripvec__lsp_document_symbols
   - mcp__ripvec__lsp_workspace_symbols
   - mcp__ripvec__lsp_hover
@@ -40,7 +38,7 @@ When called from Codex, ignore the `mcp__*` namespacing — tool names are resol
 
 **LSP path.** Prefer the native `LSP()` tool when Claude Code has any LSP configured (ripvec or otherwise). The ripvec MCP `lsp_*` tools are the fallback — and the primary path on Codex, which has no native LSP integration.
 
-**Index lifecycle.** The ripvec engine builds an in-memory index on first query and keeps it for the MCP process lifetime. CPU-only Model2Vec encoder + TinyBERT cross-encoder reranker. No on-disk cache, no warm/cold distinction. `index_status` reports liveness if you want to confirm the server is up.
+**Index lifecycle.** The ripvec engine builds an in-memory index on first query and keeps it for the MCP process lifetime. File changes are auto-detected on every search — no manual reindex needed. CPU-only Model2Vec encoder + TinyBERT cross-encoder reranker. No on-disk cache, no warm/cold distinction.
 
 ripvec covers all 21 supported languages (Rust, Python, JS/TS/TSX, Go, Java, C/C++, Bash, Ruby, HCL, Kotlin, Swift, Scala, TOML, JSON, YAML, Markdown). For languages with dedicated LSPs (Rust, Go, TypeScript), ripvec complements them with cross-language semantic features.
 

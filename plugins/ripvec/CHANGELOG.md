@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.1.0 (2026-05-22)
+
+### Changed
+- Tracks ripvec engine v3.1.0.
+
+### Added
+- Online reconciliation on every search. The engine auto-detects file changes (added,
+  modified, deleted) via blake3-confirmed mtime/size/inode diff before returning results.
+  No manual reindex step needed after editing files. Reconcile cost scales with corpus size;
+  very large corpora (~50K+ files) pay ~100 ms per query.
+
+### Removed
+- `reindex` MCP tool — superseded by online reconciliation.
+- `index_status` MCP tool — superseded by online reconciliation; the server is always ready.
+- `/ripvec:repo-index` command — documented the `reindex` tool, which is now gone.
+
 ## 3.0.4 (2026-05-22)
 
 ### Removed

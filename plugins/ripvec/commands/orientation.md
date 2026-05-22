@@ -9,7 +9,7 @@ ripvec is **semantic code search + a generic multi-language LSP**, packaged as o
 
 ## What ripvec gives you
 
-**An MCP server** with 10 tools — semantic search, structural maps, similarity, and 9 LSP-shaped tools that work even when no native LSP is available (notably Codex).
+**An MCP server** with 8 tools — semantic search, structural maps, similarity, and 9 LSP-shaped tools that work even when no native LSP is available (notably Codex). The engine auto-reconciles on every search: file additions, edits, and deletions are detected via blake3-confirmed mtime/size/inode diff before results are returned — no manual reindex needed.
 
 **An LSP server** (`ripvec-mcp --lsp`) covering **all 21 supported languages**: Rust, Python, JavaScript, TypeScript, TSX, Go, Java, C, C++, Bash, Ruby, HCL/Terraform, Kotlin, Swift, Scala, TOML, JSON, YAML, Markdown — including the ones with no dedicated language server in the marketplace (bash, HCL, TOML, Ruby, Kotlin, Swift, Scala).
 
@@ -140,8 +140,6 @@ These names are valid in both Codex (direct) and Claude Code (after `ToolSearch`
 - `get_repo_map` — PageRank structural overview (optional `focus_file`)
 - `find_similar` — given file+line, find similar embeddings
 - `find_duplicates` — codebase-wide near-duplicate pairs
-- `index_status` — server liveness + chunk/file counts
-- `reindex` — drop in-memory index and rebuild (force fresh)
 - `up_to_date` — is the running binary newer than its source?
 - `debug_log` / `log_level` — runtime diagnostics
 
@@ -190,12 +188,10 @@ Skills can be invoked explicitly via the Skill tool or by phrasing that matches 
 - `/ripvec:similar file:line` — find code similar to a location
 - `/ripvec:hotspots` — top-PageRank functions (architectural spine)
 - `/ripvec:duplicates` — find near-duplicate code
-- `/ripvec:repo-index` — force a fresh index build
 
 ## Common anti-patterns to avoid
 
 - **Sequential `Read` walks to understand architecture.** Use `get_repo_map` once instead.
 - **`Grep` for conceptual queries.** "Find auth code" is `search`, not `grep auth`.
 - **Editing on vector similarity alone.** Pass the result's `lsp_location` through LSP before editing the symbol.
-- **Skipping `index_status`.** If results look wrong, check that the index is actually built.
 - **Ignoring `scope`.** A code-only query against `scope: "all"` wastes the cross-encoder rerank pass on prose files.

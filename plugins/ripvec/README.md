@@ -37,8 +37,6 @@ For languages that also have dedicated LSPs (Rust via rust-analyzer, Go via gopl
 | `search` | Find code or docs by meaning. `scope`: `"code"` (skips docs, no rerank), `"docs"` (prose only, cross-encoder rerank on NL queries), `"all"` (default; rerank fires when corpus ≥30% prose). `include_extensions` / `exclude_extensions` narrow further |
 | `find_similar` | Given a file+line, find similar patterns elsewhere |
 | `find_duplicates` | Codebase-wide near-duplicate pairs above a similarity threshold |
-| `reindex` | Force a fresh in-memory rebuild |
-| `index_status` | Confirm the MCP server is up; report chunk/file counts |
 | `up_to_date` | Check if the running binary matches its source |
 | `debug_log` / `log_level` | Runtime diagnostics |
 
@@ -56,7 +54,7 @@ For languages that also have dedicated LSPs (Rust via rust-analyzer, Go via gopl
 | `lsp_incoming_calls` | `incomingCalls` |
 | `lsp_outgoing_calls` | `outgoingCalls` |
 
-The ripvec engine (Model2Vec static encoder + TinyBERT cross-encoder reranker) builds its in-memory index on first query and keeps it for the MCP process lifetime. **There is no on-disk cache.** CPU-only; no GPU dependencies.
+The ripvec engine (Model2Vec static encoder + TinyBERT cross-encoder reranker) builds its in-memory index on first query and keeps it for the MCP process lifetime. **There is no on-disk cache.** File changes are auto-detected on every search (blake3-confirmed mtime/size/inode diff) — no manual reindex step. CPU-only; no GPU dependencies.
 
 ### Skills (3)
 
@@ -66,7 +64,7 @@ Skills activate automatically when phrasing matches their description:
 - **semantic-discovery** — "Find the code that handles X." Routes to `search` for conceptual queries, then LSP for grounding.
 - **change-impact** — "What breaks if I change this?" Combines `get_repo_map(focus_file)` + LSP `incoming_calls` / `find_references` + `find_similar` for blast-radius analysis.
 
-### Commands (7)
+### Commands (6)
 
 - `/ripvec:orientation` — **start here.** Overview of ripvec, when to use which tool, MCP↔LSP composition, search scoping.
 - `/ripvec:map [file]` — quick structural overview (optional focus file)
@@ -74,7 +72,6 @@ Skills activate automatically when phrasing matches their description:
 - `/ripvec:similar file:line` — find code similar to a location
 - `/ripvec:hotspots` — top-PageRank functions (the architectural spine)
 - `/ripvec:duplicates` — find near-duplicate code
-- `/ripvec:repo-index` — force a fresh in-memory rebuild
 
 ### Agents (2)
 

@@ -15,7 +15,7 @@ ripvec exposes the same tool surface to both hosts; only the call syntax differs
 
 ```
 ToolSearch("ripvec")                            # discover the active namespace
-ToolSearch("select:mcp__ripvec__get_repo_map,mcp__ripvec__search,mcp__ripvec__index_status")
+ToolSearch("select:mcp__ripvec__get_repo_map,mcp__ripvec__search")
 ```
 
 The namespace is either `mcp__ripvec__*` (project-level) or `mcp__plugin_ripvec_ripvec__*` (plugin). Claude Code users should prefer the **native `LSP()` tool** when grounding repo-map entries — it talks to whichever LSP server is configured (ripvec, rust-analyzer, gopls, etc.).
@@ -28,7 +28,7 @@ ToolSearch("select:mcp__ripvec__lsp_document_symbols,mcp__ripvec__lsp_workspace_
 
 **In Codex**, tools are resolved by bare names — call `get_repo_map`, `search`, `lsp_document_symbols`, etc. directly. No `ToolSearch`, no prefix. Codex has no native LSP integration; the ripvec MCP `lsp_*` tools ARE the LSP path.
 
-**Index lifecycle.** The ripvec engine builds its in-memory index on first query against a root and keeps it for the MCP process lifetime. CPU-only Model2Vec static encoder; no on-disk cache, no warm/cold distinction, no manifest to manage. `index_status` reports liveness if you want to confirm the server is up.
+**Index lifecycle.** The ripvec engine builds its in-memory index on first query against a root and keeps it for the MCP process lifetime. File changes are auto-detected on every search (blake3-confirmed mtime/size/inode diff) — no manual reindex needed. CPU-only Model2Vec static encoder; no on-disk cache.
 
 ## Why this matters
 
