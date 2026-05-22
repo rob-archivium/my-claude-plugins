@@ -92,10 +92,9 @@ The reverse also works: LSP tools return locations and ranges that can feed back
 
 ## Search scoping and filtering
 
-`search` accepts a `scope` argument that controls three things in one switch:
+`search` accepts a `scope` argument that controls two things in one switch:
 - **Which file extensions** are indexed and searched
 - **Whether the cross-encoder reranker fires** (the heavy NL-quality pass)
-- **The rerank threshold** (when scope is auto-detected)
 
 | `scope` value | Extensions searched | Cross-encoder rerank? |
 |---|---|---|
@@ -104,6 +103,8 @@ The reverse also works: LSP tools return locations and ranges that can feed back
 | `"all"` (default) | Everything | **On** when the indexed corpus is ≥30% prose |
 
 **Symbol-shaped queries never rerank** (e.g. `ConnectionPool`, `useAuth`) — the bi-encoder + path BM25 + PageRank stack is enough; the cross-encoder forward pass costs ~1s without quality lift on identifiers.
+
+**No threshold knob.** ripvec v3.0.0 removed the `threshold` parameter. A calibrated relative noise-floor filter is applied internally: `score < 0.10 × top_score` when rerank is off (code), `score < 0.30 × top_score` when rerank fires (docs). These cutoffs were calibrated against 2,250 LLM-judge verdicts to maximize F1 with PARTIAL counted as a hit. Callers don't tune; the engine handles it.
 
 Further narrowing:
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.0.1 (2026-05-21)
+
+### Changed
+- `commands/orientation.md` documents the v3.0.0 removal of the `threshold` parameter and the calibrated relative noise-floor filter (0.10 × top_score when rerank is off, 0.30 × top_score when rerank fires). Calibration provenance: 2,250 LLM-judge verdicts on 45 queries across 3 corpora. The plugin's bare-name tool references (`search`, `get_repo_map`, etc.) were already correct; only the orientation prose needed updating.
+
+### Notes
+- No behavior change in the plugin itself. The ripvec engine v3.0.0 ships with the calibrated internal cutoff regardless of which plugin version users have. This patch release exists to keep the orientation command in sync with the engine surface so users don't see a "threshold" parameter that doesn't exist.
+
 ## 3.0.0 (2026-05-21)
 
 ### Breaking changes (matches ripvec core v3.0.0)
