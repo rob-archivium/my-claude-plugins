@@ -1,5 +1,10 @@
 # Changelog
 
+## 3.0.4 (2026-05-22)
+
+### Removed
+- `hooks/SessionStart` hook and `hooks/scripts/check-install.sh`. The hook printed a one-line status message at every session start ("ripvec-mcp X.Y.Z ready." or "ripvec-mcp will auto-install on first use.") that was pure noise — install/launch is handled inline by `bin/ensure-ripvec-mcp.sh` invoked from `.mcp.json`, which is the actual bootstrap path. The SessionStart message added nothing the user needed.
+
 ## 3.0.3 (2026-05-22)
 
 ### Changed

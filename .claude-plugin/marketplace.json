@@ -15,7 +15,7 @@
       "name": "ripvec",
       "source": "./plugins/ripvec",
       "description": "Semantic code + document search. Model2Vec static bi-encoder (potion-base-32M default) with path-enriched BM25, function-level PageRank, and TinyBERT-L-2 cross-encoder rerank gated by corpus class. Single `search` MCP tool with intent-shaped scope (code / docs / all) plus include/exclude extension filters. Inverted BM25 postings, parallel BLAS sgemv, parallel repo-graph build. 20 tree-sitter grammars, 37 extensions, MCP + LSP server, CPU-only. Code: 42 ms p50 on a 1M-chunk corpus; prose: 34 ms p50 with NDCG@10 = 1.000 on a 15-query Gutenberg benchmark.",
-      "version": "3.0.3",
+      "version": "3.0.4",
       "author": {
         "name": "Robert Waugh"
       },
