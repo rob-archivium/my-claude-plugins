@@ -1,5 +1,28 @@
 # Changelog
 
+## 3.0.0 (2026-05-21)
+
+### Breaking changes (matches ripvec core v3.0.0)
+- Removed the ModernBERT and BGE-small transformer bi-encoders. ripvec now ships as a single cacheless engine: Model2Vec static encoder + TinyBERT-L-2-v2 cross-encoder reranker, CPU-only.
+- Removed the `--model bert`, `--model modernbert`, `--fast`, `--text`, `--modern`, `--backend`, `--device`, `--batch-size`, `--max-tokens`, `--model-repo`, `--interactive` CLI flags. They were tied to the doomed transformer engines.
+- Removed `RIPVEC_MCP_ENGINE` env var (the MCP server is unconditionally ripvec-engine).
+- Removed the `legacy-transformer-mcp` Cargo feature.
+- Removed the `metal`, `cuda`, `mlx` Cargo features and their dep stacks (cudarc, mlx-rs, metal, objc2-metal, objc2-metal-performance-shaders, nvrtc).
+- The `.ripvec/cache/` repo-local index directory was tied to the transformer engines and is gone. The ripvec engine builds its index in memory on first query and keeps it for the MCP process lifetime.
+- See the [ripvec v3.0.0 release notes](https://github.com/fnordpig/ripvec/blob/main/CHANGELOG.md) for the full surgery scope (-25,000+ LOC).
+
+### Plugin changes
+- New `/ripvec:orientation` command — single-page overview of when to use which tool, how to compose MCP results with LSP, how to scope and filter searches. The recommended starting point.
+- All skills (`codebase-orientation`, `semantic-discovery`, `change-impact`) rewritten to:
+  - Use bare tool names in prose (`search`, `get_repo_map`, `lsp_hover`) instead of host-specific prefixed names (`mcp__ripvec__search`), which broke Codex tool resolution.
+  - Call out both invocation paths: Claude Code (`ToolSearch` + `mcp__ripvec__*` / `mcp__plugin_ripvec_ripvec__*` namespace) and Codex (bare names, no prefix).
+  - Direct Claude Code users to the **native `LSP()` tool** as the preferred grounding path; ripvec MCP `lsp_*` tools are the fallback when no native LSP is configured.
+  - Direct Codex users to ripvec MCP `lsp_*` tools as the primary LSP path (Codex has no native LSP integration).
+- Agent `tools:` frontmatter (Claude-Code-specific) now lists the LSP-shaped MCP tools alongside the semantic tools, so the dispatched agent has access to both surfaces under both namespaces.
+- All commands updated to use bare tool names and reference `/ripvec:orientation` for the broader decision tree.
+- README rewritten to reflect the v3.0.0 surface: removed Metal/CUDA/MLX performance tables; added the LSP-shaped MCP tools reference; added an explicit Codex vs Claude Code comparison.
+- Verified post-surgery: full 63-repo semble bench shows bit-identical NDCG@10 across all repos (0.803461 macro), p50 -2.28% (within +/-5% threshold). The cross-encoder reranker auto-path on prose corpora is empirically preserved.
+
 ## 0.13.27 (2026-05-13)
 
 ### Fixed

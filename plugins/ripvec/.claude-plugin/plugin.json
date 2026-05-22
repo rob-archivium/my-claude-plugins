@@ -1,14 +1,22 @@
 {
   "name": "ripvec",
-  "version": "2.1.0",
-  "description": "Semantic code search + generic multi-language LSP. 20 grammars, 37 extensions, live indexing dashboard with stable atlas viewport, RDF/OWL chunking, function-level PageRank, hybrid BM25+vector ranking, GPU-accelerated (Metal/CUDA).",
+  "version": "3.0.0",
+  "description": "Semantic code search + generic multi-language LSP. 20 grammars, 37 extensions, live indexing dashboard with stable atlas viewport, RDF/OWL chunking, function-level PageRank, hybrid BM25+vector ranking. Model2Vec static encoder + TinyBERT cross-encoder reranker, CPU-only.",
   "author": {
     "name": "Robert Waugh",
     "url": "https://github.com/fnordpig"
   },
   "repository": "https://github.com/fnordpig/ripvec",
   "license": "MIT",
-  "keywords": ["search", "semantic", "lsp", "code-intelligence", "embeddings", "pagerank", "tree-sitter", "metal", "cuda", "gpu"],
+  "keywords": [
+    "search",
+    "semantic",
+    "lsp",
+    "code-intelligence",
+    "embeddings",
+    "pagerank",
+    "tree-sitter"
+  ],
   "mcpServers": "./.mcp.json",
   "lspServers": "./.lsp.json"
 }

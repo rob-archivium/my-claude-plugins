@@ -1,21 +1,30 @@
 ---
 name: repo-index
-description: Create a repo-level search index that can be committed to git
+description: Force a fresh in-memory rebuild of the search index
 ---
 
-Call the `reindex` MCP tool with repo-level storage enabled:
+Call the `reindex` MCP tool to evict any cached in-memory index for the current root and rebuild it from scratch:
 
-reindex(repo_level: true)
+```
+reindex()
+```
 
-This creates a `.ripvec/` directory at the project root containing:
-- `config.toml` — model and version pin
-- `cache/` — the search index (manifest + object store)
+In Claude Code, the tool may live under `mcp__ripvec__*` or `mcp__plugin_ripvec_ripvec__*` — `ToolSearch("ripvec")` if unsure. In Codex, call `reindex` directly.
 
-After indexing completes, commit `.ripvec/` to git so teammates get instant
-semantic search without re-embedding.
+## What this does
 
-If the index already exists as repo-local, this re-indexes incrementally
-(only changed files are re-embedded).
+The ripvec engine (Model2Vec static encoder + cross-encoder reranker) is **cacheless and CPU-only** since v3.0.0. The index lives entirely in the MCP process's memory, built on first query against a root, and survives until the process exits.
 
-Report the result: how many chunks indexed, from how many files, and remind
-the user to `git add .ripvec/ && git commit` to share the index.
+`reindex` evicts the in-memory cache for the current root and rebuilds. Use it when:
+- Files changed and the index is stale (rare — most usage rebuilds on next query naturally)
+- You want to confirm the index reflects the current working tree before a critical search
+- You suspect a corrupted state and want a fresh build
+
+After `reindex` completes, the response reports:
+- Chunks indexed
+- Files walked
+- Duration (typically <500ms for a medium repo, a few seconds for very large repos)
+
+There is no `.ripvec/cache/` directory to commit; the v2.x repo-local cache was tied to the doomed transformer engines and was removed in v3.0.0. If you want indexing to persist across MCP restarts, that's a future feature; today, the process-lifetime cache is by design (no disk I/O on the hot path, no manifest invalidation logic).
+
+See `/ripvec:orientation` for the full tool overview.

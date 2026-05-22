@@ -14,28 +14,61 @@
     {
       "name": "ripvec",
       "source": "./plugins/ripvec",
-      "description": "Semantic code + document search. Static Model2Vec bi-encoder (potion-base-32M default) with path-enriched BM25, function-level PageRank, and TinyBERT-L-2 cross-encoder rerank gated by corpus class. Single `search` MCP tool with intent-shaped scope (code / docs / all) plus include/exclude extension filters. Inverted BM25 postings, parallel BLAS sgemv, parallel repo-graph build. 20 tree-sitter grammars, 37 extensions, MCP + LSP server, GPU-accelerated transformer engines optional. Code: 42 ms p50 on a 1M-chunk corpus; prose: 34 ms p50 with NDCG@10 = 1.000 on a 15-query Gutenberg benchmark.",
-      "version": "2.1.0",
+      "description": "Semantic code + document search. Model2Vec static bi-encoder (potion-base-32M default) with path-enriched BM25, function-level PageRank, and TinyBERT-L-2 cross-encoder rerank gated by corpus class. Single `search` MCP tool with intent-shaped scope (code / docs / all) plus include/exclude extension filters. Inverted BM25 postings, parallel BLAS sgemv, parallel repo-graph build. 20 tree-sitter grammars, 37 extensions, MCP + LSP server, CPU-only. Code: 42 ms p50 on a 1M-chunk corpus; prose: 34 ms p50 with NDCG@10 = 1.000 on a 15-query Gutenberg benchmark.",
+      "version": "3.0.0",
       "author": {
         "name": "Robert Waugh"
       },
       "license": "MIT",
-      "keywords": ["search", "semantic", "lsp", "code-intelligence", "embeddings", "pagerank", "tree-sitter", "metal", "cuda", "gpu", "call-hierarchy", "diagnostics"],
+      "keywords": [
+        "search",
+        "semantic",
+        "lsp",
+        "code-intelligence",
+        "embeddings",
+        "pagerank",
+        "tree-sitter",
+        "call-hierarchy",
+        "diagnostics"
+      ],
       "category": "code-intelligence",
-      "tags": ["search", "lsp", "code-intelligence", "mcp-server"]
+      "tags": [
+        "search",
+        "lsp",
+        "code-intelligence",
+        "mcp-server"
+      ]
     },
     {
       "name": "tracemeld",
       "source": "./plugins/tracemeld",
-      "description": "LLM-native performance profiling — import CPU profiles from any language (Rust, Go, Python, TypeScript, C/C++), find bottlenecks, detect waste patterns, and navigate to hot code via LSP. Includes 12 MCP tools, 6 language profiling skills, and a performance analysis agent.",
+      "description": "LLM-native performance profiling \u2014 import CPU profiles from any language (Rust, Go, Python, TypeScript, C/C++), find bottlenecks, detect waste patterns, and navigate to hot code via LSP. Includes 12 MCP tools, 6 language profiling skills, and a performance analysis agent.",
       "version": "0.2.0",
       "author": {
         "name": "Robert Waugh"
       },
       "license": "MIT",
-      "keywords": ["profiling", "performance", "flamegraph", "pprof", "tracing", "optimization", "bottleneck", "cpu", "rust", "go", "python", "typescript", "cpp"],
+      "keywords": [
+        "profiling",
+        "performance",
+        "flamegraph",
+        "pprof",
+        "tracing",
+        "optimization",
+        "bottleneck",
+        "cpu",
+        "rust",
+        "go",
+        "python",
+        "typescript",
+        "cpp"
+      ],
       "category": "performance",
-      "tags": ["profiling", "analysis", "mcp-server"]
+      "tags": [
+        "profiling",
+        "analysis",
+        "mcp-server"
+      ]
     }
   ]
 }
