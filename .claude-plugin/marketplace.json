@@ -15,7 +15,7 @@
       "name": "ripvec",
       "source": "./plugins/ripvec",
       "description": "Semantic code + document search. Model2Vec static bi-encoder (potion-base-32M) + TinyBERT-L-2 cross-encoder reranker, CPU-only. 21 tree-sitter grammars, 26 extensions, MCP + LSP server. 4.0.1: token_budget allocation for get_repo_map — PageRank-proportional byte budget (40% cap per file, logarithmic attenuation cutoff), RepoMapSymbol.rank, truncated_symbols/truncated_calls telemetry. 4.0: LSP-shaped composability — every tool returns lsp_location. Code: 42 ms p50; prose: 34 ms p50 with NDCG@10 = 1.000.",
-      "version": "4.0.4",
+      "version": "4.0.5",
       "author": {
         "name": "Robert Waugh"
       },

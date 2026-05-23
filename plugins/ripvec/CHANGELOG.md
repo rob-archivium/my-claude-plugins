@@ -1,5 +1,37 @@
 # Changelog
 
+## 4.0.5 (2026-05-23)
+
+Tracks ripvec engine v4.0.5 — substrate fixes from the 5-corpus pattern
+validation campaign. Five engine bugs surfaced by exercising the
+AGENTIC_PATTERNS_4_0 recipes against mnemosyne, flask, go-stdlib,
+aurora, and ripvec, each reproduced on multiple corpora:
+
+- **Cross-root contamination on workspace_symbols and call hierarchy**
+  — `root` parameter is now an enforced filter, not a hint. Eliminates
+  the worst class of 4.0.x bugs (results from project A leaking into
+  project B's tool calls).
+- **Python and Go call-graph extraction** — `lsp_incoming_calls` and
+  `lsp_outgoing_calls` now return non-empty results on Python (`self.method()`,
+  `instance.method()` after `instance = ClassName(...)`) and Go
+  (receiver methods, pointer receivers). Python inheritance chains
+  (Flask-style `Flask` extends `App`) still partially unresolved —
+  full MRO traversal is a separate effort.
+- **Topic-sensitive PageRank fix** — `focus_file` now applies
+  Haveliwala 2002 soft personalization (α=0.15 on focus, 0.85/(n-1)
+  uniform elsewhere) instead of a near-Dirac delta. Result: meaningful
+  neighborhood rebias instead of focus-dominance with everything else
+  collapsed to a uniform floor.
+- **Kind taxonomy fixes** — Python `@property` → Property (kind=7),
+  Go `interface` → Interface (kind=11), HCL block labels (`aws_iam_role.loader`)
+  → symbol name correctly extracted, `symbol_kind_int` field added for
+  numeric LSP-integer access alongside the friendly string.
+- **`post_dedup_count` uncapped** — was previously capped at 20 (the
+  result list size), making drift-index math systematically wrong.
+
+The plugin binary auto-updater fetches the latest GitHub release;
+existing plugin users get 4.0.5 on next bootstrap.
+
 ## 4.0.4 (2026-05-22)
 
 Tracks ripvec engine v4.0.4 — function-tier promotion via corpus-relative rank thresholds.
