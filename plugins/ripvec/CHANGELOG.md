@@ -1,5 +1,42 @@
 # Changelog
 
+## 4.0.0 (2026-05-22)
+
+Tracks ripvec engine v4.0.0 — LSP-shaped composability release.
+
+### Breaking changes (mirrors engine)
+
+- `search_code` and `search_text` tools removed. Use `search(corpus="code"|"docs"|"all")`.
+  The `scope` parameter is gone; use `corpus` + `rerank` + `include_metadata` instead.
+- `get_repo_map` now returns JSON with a `files` array (lsp_location, rank, symbols, calls
+  per file), not rendered prose. Pass `files[N].lsp_location.file_path` to downstream tools.
+- Position-scoped LSP tools (`lsp_hover`, `lsp_goto_definition`, `lsp_goto_implementation`,
+  `lsp_references`, `lsp_prepare_call_hierarchy`) accept `location` objects, not a
+  `(file_path, line, character)` triple. Pass `results[N].lsp_location` directly.
+- `find_similar` accepts `location` (pass `results[0].lsp_location` directly) or
+  `symbol_name`. The legacy `(file_path, line)` pair is removed.
+
+### New capabilities
+
+- Zero-destructure composability: chain tools by passing `lsp_location` objects directly —
+  `search → get_repo_map → lsp_document_symbols → lsp_prepare_call_hierarchy → lsp_outgoing_calls`
+  with no field extraction at any handoff.
+- `lsp_incoming_calls` and `lsp_outgoing_calls` `item` parameter is now typed `object`;
+  pass the `lsp_prepare_call_hierarchy` result directly without JSON-stringifying.
+- `chunk.kind` now reflects the correct LSP `SymbolKind` for Rust (struct, trait, enum,
+  fn, mod, const, static, type_alias); `kind=Variable` no longer used as a catch-all.
+- `lsp_workspace_symbols` response includes `pre_dedup_count` and `post_dedup_count` fields.
+- `find_duplicates` response includes `corpus_chunk_count` and `capped` fields.
+- `search` results `lsp_location.start_line` points at the symbol identifier line
+  (not the chunk start, which may be a doc-comment).
+
+### Recipes and skills updated
+
+- All recipes updated: `scope=` replaced with `corpus=` / `rerank=` / `include_metadata=`.
+- `find_similar(file_path=..., line=...)` examples replaced with `find_similar(location=...)`.
+- Composability chain examples updated to reflect zero-destructure pattern.
+- `get_repo_map` recipes updated for JSON output format.
+
 ## 3.1.2 (2026-05-22)
 
 Tracks ripvec engine post-v3.1.1 audit (28 findings closed across 16 MCP entry points).

@@ -35,6 +35,25 @@ The MCP and LSP surfaces share the same underlying index (Model2Vec static encod
 
 The first rule: **describe behavior → `search`. Name a specific symbol you already know about → LSP. Look for exact text → Grep.**
 
+## For non-trivial work: invoke the recipes skill
+
+This orientation page is the fast map. For any substantial task — chasing a bug, planning a refactor, auditing a module, teaching a codebase — reach for the **named-pattern library**:
+
+**`Skill ripvec:recipes`**
+
+The library distills a 15-agent brainstorm into a usable pattern language:
+- **5 orientations** — Cartographer, Detective, Refactorer, Onboarder, Sentinel
+- **15 tactical recipes** with concrete tool sequences (e.g., *Blast-Radius Manifest Before Rename*, *Sibling Diff*, *PageRank-Anchored Concept Tour*, *Cohesion Refraction Test*)
+- **8 compositional primitives** — Triangulation, Fixed-Point Expansion, Sibling Diff, Duplicates as Taxonomy, Names as Folk Taxonomy, Causal Intervention, Trait Constellation Survey, PageRank Polarity
+- **8 heuristics** — when to reach for which composition (H1: *the map you don't summon costs nothing*, H8: *scope before similarity at scale*, etc.)
+- **Empirical revisions** — gotchas learned by running the patterns against real codebases (cursor positioning, the silent 10K-chunk cap, kind-tagging caveats)
+
+Each pattern is **named** so you can refer to it: "I ran a *Blast-Radius Manifest* on the symbol; 38 refs across 21 files; rename lands in 4 commits per the invariant grouping" is more useful in a PR than "I looked at where it's used."
+
+**Read the skill before any substantial codebase task.** It's the canonical place to find the *right* pattern; this orientation page is a quickstart.
+
+The three flagship workflows below are the three most common patterns — *Structural Spine* (Cartographer), *Intent First* (Cartographer/Semantic Discovery), and *Blast-Radius Manifest* (Refactorer). The skill catalog covers thirty more.
+
 ## The three flagship workflows
 
 ### 1. Codebase orientation (you've never seen this code before)

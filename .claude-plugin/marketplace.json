@@ -14,8 +14,8 @@
     {
       "name": "ripvec",
       "source": "./plugins/ripvec",
-      "description": "Semantic code + document search. Model2Vec static bi-encoder (potion-base-32M default) with path-enriched BM25, function-level PageRank, and TinyBERT-L-2 cross-encoder rerank gated by corpus class. Single `search` MCP tool with intent-shaped scope (code / docs / all) plus include/exclude extension filters. Online reconciliation on every search — file changes auto-detected via blake3 mtime/size/inode diff. 21 tree-sitter grammars, 26 extensions, MCP + LSP server, CPU-only. LSP tools work without an explicit root parameter; goto_implementation now resolves Rust trait impl blocks. Code: 42 ms p50 on a 1M-chunk corpus; prose: 34 ms p50 with NDCG@10 = 1.000 on a 15-query Gutenberg benchmark.",
-      "version": "3.1.2",
+      "description": "Semantic code + document search. Model2Vec static bi-encoder (potion-base-32M) + TinyBERT-L-2 cross-encoder reranker, CPU-only. 21 tree-sitter grammars, 26 extensions, MCP + LSP server. 4.0: LSP-shaped composability — every tool returns lsp_location; every position tool accepts it. `search` with corpus/rerank/include_metadata flags. `get_repo_map` returns JSON with lsp_location-grounded files array. `find_similar` accepts location or symbol_name. `lsp_incoming_calls`/`lsp_outgoing_calls` accept prepare result items directly as objects. Zero-destructure tool chaining. Code: 42 ms p50 on a 1M-chunk corpus; prose: 34 ms p50 with NDCG@10 = 1.000.",
+      "version": "4.0.0",
       "author": {
         "name": "Robert Waugh"
       },
