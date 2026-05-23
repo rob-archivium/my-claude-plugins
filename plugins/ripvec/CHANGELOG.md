@@ -1,5 +1,30 @@
 # Changelog
 
+## 4.0.3 (2026-05-22)
+
+Tracks ripvec engine v4.0.3 — call-edge extractor enrichment.
+
+The 4.0.2 release surfaced (via live MCP verification) that def-level
+PageRank was effectively flat across the corpus because the call-edge
+extractor captured only a fraction of true Rust dispatch edges.
+4.0.3 ships three layered improvements:
+
+- **G1 qualified-path capture.** Scoped calls (`mod::foo()`) now retain
+  the full path rather than collapsing to the bare name; resolve_calls
+  uses the qualifier for module disambiguation.
+- **G2 method receiver heuristic.** AST walk infers receiver types for
+  `self.method()`, typed parameters, and constructor let-bindings.
+- **G3 impl→trait edges.** Bidirectional weighted edges between trait
+  method signatures and overriding impl methods so PageRank propagates
+  through trait dispatch.
+
+Measured variance lift on the ripvec corpus: G1 delivers 18.8× max/min
+ratio and 265 distinct nonzero ranks (vs 4.0.2's effectively-flat
+distribution). G2/G3 are inert on this specific corpus due to
+external-library-heavy method calls and shallow trait hierarchies, but
+unit-tested and architecturally sound for codebases with heavier
+internal dispatch.
+
 ## 4.0.2 (2026-05-22)
 
 Tracks ripvec engine v4.0.2 — three corrections to the 4.0.1 token-budget
