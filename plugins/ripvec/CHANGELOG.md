@@ -1,5 +1,58 @@
 # Changelog
 
+## 4.1.0 (2026-05-23)
+
+Tracks ripvec engine v4.1.0 — minor-version feature release.
+
+### Added — find_dead_code MCP tool
+
+Cross-language detection of code unreachable from any entry point.
+First user-visible consumer of the entry_points + dead-code substrate
+landed dormant in 4.0.6.
+
+Per-language entry-point detection (Rust/Python/Go via
+`EntryPointDetector` trait), BFS reachability from entries, connected-
+component clustering on the dead subgraph, sorted by size. Compose
+with `lsp_references` to confirm a cluster is truly dead before
+deleting.
+
+```
+find_dead_code(
+  root, include_test_paths=false, max_clusters=50, min_cluster_size=1
+)
+→ {
+  dead_clusters: [{root_node, size, total_lines, member_defs}],
+  total_dead_defs, total_live_defs, dead_fraction,
+  entry_points_detected, capped
+}
+```
+
+### Known caveat: dead_fraction over-reports
+
+Live ripvec self-test reports `dead_fraction = 0.982`. Two root
+causes — both filed as 4.1.1 follow-up:
+
+- **I#49**: RustEntryDetector LibraryExport detection only fires on
+  direct `pub fn` in `lib.rs`/`mod.rs`; misses `pub use` re-export
+  chains. Needs widening to follow re-exports.
+- **I#50**: call-resolver `def_callees` edge coverage is sparse,
+  under-propagating reachability.
+
+Use `dead_fraction` as a *relative ordering signal* (cluster sizes
+are meaningful, member_defs lists are useful) until 4.1.1 closes
+both. Real findings include `pagerank_lookup`, `RepoConfig`,
+`BlasKind`, and other already-known wired stubs.
+
+### Substrate (4.0.7 + earlier)
+
+ripvec engine 4.1.0 builds on the substrate fixes from 4.0.7 (I#37
+document_symbols Python classes, I#38 cross-corpus position-scoped
+LSP resolver, I#39 Python decorator over-tagging logic, I#40
+lsp_references char-tolerance), which are all required for
+find_dead_code to compose correctly across corpora.
+
+See engine CHANGELOG for full per-issue detail.
+
 ## 4.0.7 (2026-05-23)
 
 Tracks ripvec engine v4.0.7 — substrate fixes from the third 5-corpus
