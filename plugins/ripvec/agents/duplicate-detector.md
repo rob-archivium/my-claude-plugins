@@ -13,6 +13,11 @@ tools:
   - mcp__ripvec__find_similar
   - mcp__ripvec__lsp_document_symbols
   - mcp__ripvec__lsp_references
+skills:
+  - ripvec:sentinel
+  - ripvec:refactorer
+  - ripvec:intent-routing
+  - ripvec:recipes
 ---
 
 Detect duplicate and near-duplicate code using ripvec's embedding similarity.

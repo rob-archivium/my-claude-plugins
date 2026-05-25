@@ -1,7 +1,26 @@
 ---
 name: change-impact
 description: "ALWAYS use this skill instead of Grep or Read when exploring outward from known code — understanding what depends on it, what it depends on, or what's similar. This skill MUST be used before any refactor, rename, or signature change. Triggers on: 'what depends on this', 'what breaks if I change this', 'find all callers', 'what calls this', 'find similar code', 'trace the call chain', 'blast radius'. Use ripvec's LSP incoming_calls/outgoing_calls and find_similar instead of grepping for function names."
+graph:
+  generalizes_to:
+    - ripvec:ripvec-orientation
+  specializes_into: []
+  cross_references:
+    - ripvec:refactorer
+    - ripvec:codebase-orientation
+    - ripvec:intent-routing
+  escalate_to: ripvec:refactorer
 ---
+
+## §0 — Graph position
+
+**Parent hub:** `ripvec:refactorer` (Refactorer orientation, HUB-R).
+**Composes-into:** `ripvec:codebase-orientation` (the focused map gives
+the dependency direction after the blast radius is known). See
+`SKILL_SEMANTIC_GRAPH.md §4` CL-BLAST-RADIUS and CL-CONTRACT-SURVEY for
+the cluster bodies this skill traverses. The canonical recipe is
+**T10 Blast-Radius Manifest** (P2 Fixed-Point Expansion). For the full
+orientation triage, load `ripvec:ripvec-orientation` first.
 
 # Change Impact: Code → Context → Connections
 

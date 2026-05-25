@@ -1,7 +1,25 @@
 ---
 name: codebase-orientation
 description: "ALWAYS use this skill instead of reading files sequentially when starting work on unfamiliar code. This skill MUST be used before Read or Glob for orientation tasks. Triggers on: 'how does this project work', 'explain the architecture', 'show me the structure', 'where should I start', 'what are the main modules'. Use ripvec's get_repo_map and LSP document_symbol instead of listing directories or reading files one by one."
+graph:
+  generalizes_to:
+    - ripvec:ripvec-orientation
+  specializes_into: []
+  cross_references:
+    - ripvec:cartographer
+    - ripvec:semantic-discovery
+    - ripvec:intent-routing
+  escalate_to: ripvec:cartographer
 ---
+
+## §0 — Graph position
+
+**Parent hub:** `ripvec:cartographer` (Cartographer orientation, HUB-C).
+**Composes-into:** `ripvec:semantic-discovery` (once the spine is known,
+semantic search anchors the tour). See `SKILL_SEMANTIC_GRAPH.md §4`
+CL-STRUCTURAL-SPINE and CL-CONCEPT-TOUR for the cluster bodies this skill
+traverses. For the full orientation triage (which of the 5 hubs fits),
+load `ripvec:ripvec-orientation` first.
 
 # Codebase Orientation
 

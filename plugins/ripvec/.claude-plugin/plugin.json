@@ -1,7 +1,7 @@
 {
   "name": "ripvec",
-  "version": "4.1.0",
-  "description": "Semantic code search + multi-language LSP. 21 grammars, 26 extensions, function-level PageRank, hybrid BM25+vector ranking. Model2Vec static encoder + TinyBERT cross-encoder reranker, CPU-only. 4.0.1: token_budget allocation for get_repo_map (replaces max_files) — PageRank-proportional byte budget with 40% cap, logarithmic attenuation, and per-file truncated_symbols/truncated_calls telemetry. 4.0: LSP-shaped composability — every tool returns lsp_location; every position tool accepts it.",
+  "version": "4.1.10",
+  "description": "Semantic code search + multi-language LSP + knowledge-graph skill index. 21 grammars, 26 extensions, function-level PageRank, hybrid BM25+vector ranking. Model2Vec static encoder + TinyBERT cross-encoder reranker, CPU-only. 4.1.10: knowledge-graph skill index (5 orientations as hub skills, 7 per-language recipe skills, intent-routing skill, executive-function subagents); 7 new slash commands (/orient, /cartograph, /blast-radius, /dead-code, /audit, /teach, /trace). 4.1.0: find_dead_code MCP tool. 4.0.1: token_budget allocation for get_repo_map — PageRank-proportional byte budget with 40% cap, logarithmic attenuation, per-file truncated_symbols/truncated_calls telemetry. 4.0: LSP-shaped composability — every tool returns lsp_location; every position tool accepts it.",
   "author": {
     "name": "Robert Waugh",
     "url": "https://github.com/fnordpig"

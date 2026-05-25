@@ -1,10 +1,14 @@
 # ripvec
 
-Semantic code search + multi-language LSP for Claude Code and Codex.
+Semantic code search + multi-language LSP + knowledge-graph skill index for Claude Code and Codex.
 
-Find code by meaning. Navigate with function-level PageRank. Get syntax diagnostics across 21 languages. No separate language server install needed — ripvec handles everything.
+Find code by meaning. Navigate with function-level PageRank. Get syntax diagnostics across 21 languages. Route non-trivial codebase tasks through a battle-tested pattern library (5 orientation hubs, ~55 named recipes, ~15 technique clusters). No separate language server install needed.
 
-> **v3.0.0** removed the optional ModernBERT and BGE-small transformer bi-encoders. ripvec now ships as a single cacheless engine: Model2Vec static encoder + TinyBERT-L-2-v2 cross-encoder reranker, CPU-only. See `CHANGELOG.md` for the breaking-change boundary.
+> **v4.1.10** adds the knowledge-graph skill orchestration layer: `ripvec-orientation` hub skill, `intent-routing` lookup table, 7 new commands, and graph-preamble frontmatter on all base skills.
+>
+> **v4.1.0** adds `find_dead_code` MCP tool — cross-language dead-code sweep with BFS reachability from language-specific entry points.
+>
+> **v3.0.0** removed ModernBERT and BGE-small; ripvec now ships as a single cacheless engine: Model2Vec static encoder + TinyBERT-L-2-v2 cross-encoder reranker, CPU-only.
 
 ## What ripvec provides
 
@@ -27,107 +31,115 @@ ripvec is **Claude Code's preferred LSP for all supported languages** — especi
 
 **Supported languages**: Rust, Python, JavaScript, TypeScript, TSX, Go, Java, C, C++, Bash, Ruby, HCL/Terraform, Kotlin, Swift, Scala, TOML, JSON, YAML, Markdown (26 file extensions).
 
-For languages that also have dedicated LSPs (Rust via rust-analyzer, Go via gopls, etc.), ripvec **complements** with cross-language semantic features no single-language LSP can provide.
-
 ### MCP Server
 
 | Tool | What it does |
 |---|---|
-| `get_repo_map` | PageRank-weighted structural overview — shows which files and functions matter most. Ambiguous `focus_file` returns a `candidates:[...]` list instead of silently picking the first match |
-| `search` | Find code or docs by meaning. `scope`: `"code"` (skips docs, no rerank), `"docs"` (prose only, cross-encoder rerank on NL queries), `"all"` (default; rerank fires when corpus ≥30% prose). `include_extensions` / `exclude_extensions` narrow further |
-| `find_similar` | Given a file+line, find similar patterns elsewhere |
-| `find_duplicates` | Codebase-wide near-duplicate pairs above a similarity threshold (default 0.5). `intra_file: bool` (default `false`) controls same-file pairs; capped at 10K chunks |
-| `up_to_date` | Check if the running binary matches its source. Handles symlink cycles; includes `Cargo.lock`; distinguishes `no_source_found` from "up to date" |
-| `debug_log` | Runtime diagnostics — logs relative paths (not absolute) for privacy |
-| `log_level` | Set runtime log filter. Allowlisted to `ripvec`/`ripvec_mcp`/`ripvec_core` prefixes; input capped at 1024 chars. Response includes `previous_filter` for revertibility |
+| `get_repo_map` | PageRank-weighted structural overview with `token_budget` allocation (40% cap per file, logarithmic attenuation). Optional `focus_file` for topic-sensitive PageRank. |
+| `search` | Find code or docs by meaning. `corpus`: `"code"` / `"docs"` / `"all"`. `rerank`: `"auto"` / `"always"` / `"never"`. |
+| `find_similar` | Given a file+line or `symbol_name`, find similar patterns elsewhere |
+| `find_duplicates` | Codebase-wide near-duplicate pairs (default threshold 0.5). `intra_file: bool` for same-file pairs; capped at 10K chunks |
+| `find_dead_code` | Cross-language dead-code sweep via BFS from entry points. `confidence` band (High/Medium/Low). |
+| `up_to_date` | Check if the running binary matches its source |
+| `debug_log` / `log_level` | Runtime diagnostics and Pearl do-operator causal intervention |
 
-**LSP-shaped MCP tools** (for hosts without a native LSP integration — notably Codex):
+**LSP-shaped MCP tools** (primary path for Codex; fallback for Claude Code):
+`lsp_document_symbols`, `lsp_workspace_symbols`, `lsp_goto_definition`,
+`lsp_goto_implementation`, `lsp_references`, `lsp_hover`,
+`lsp_prepare_call_hierarchy`, `lsp_incoming_calls`, `lsp_outgoing_calls`.
 
-| Tool | LSP equivalent |
-|---|---|
-| `lsp_document_symbols` | `documentSymbol` |
-| `lsp_workspace_symbols` | `workspaceSymbol` — deduplicates by (name, kind) |
-| `lsp_goto_definition` | `goToDefinition` |
-| `lsp_goto_implementation` | `goToImplementation` — resolves to impl blocks (not trait declarations) |
-| `lsp_references` | `findReferences` |
-| `lsp_hover` | `hover` |
-| `lsp_prepare_call_hierarchy` | `prepareCallHierarchy` — overload-aware, filters non-callables |
-| `lsp_incoming_calls` | `incomingCalls` |
-| `lsp_outgoing_calls` | `outgoingCalls` — preserves qualified-path scope |
+### Skills (10 + 5 hub stubs + 7 language skills)
 
-All LSP-shaped MCP tools work without an explicit `root` parameter (defaults to the MCP server's working directory).
+Skills activate automatically when phrasing matches their description.
 
-The ripvec engine (Model2Vec static encoder + TinyBERT cross-encoder reranker) builds its in-memory index on first query and keeps it for the MCP process lifetime. **There is no on-disk cache.** File changes are auto-detected on every search (blake3-confirmed mtime/size/inode diff) — no manual reindex step. CPU-only; no GPU dependencies.
+**Orientation layer (4.1.10):**
+- **ripvec-orientation** — top-level hub. Triages which of the 5 orientations fits; routes to the appropriate hub-skill and first recipe. Fire before any other ripvec skill on non-trivial tasks.
+- **intent-routing** — phrasal lookup table. Maps verbatim task phrases to hub/cluster/first-recipe/terminal-tool. ~50 verbatim intent phrases across 6 intent classes.
 
-### Skills (3)
+**Hub skills (Track B — 5 stubs, routed to by ripvec-orientation):**
+`cartographer`, `detective`, `refactorer`, `onboarder`, `sentinel`
 
-Skills activate automatically when phrasing matches their description:
+**Base skills (legacy, still fire on phrasing — now graph-aware):**
+- **codebase-orientation** — "How does this project work?" → `get_repo_map` + `lsp_document_symbols`
+- **semantic-discovery** — "Find the code that handles X" → `search` + LSP grounding
+- **change-impact** — "What breaks if I change this?" → call hierarchy + `find_similar`
+- **recipes** — Named pattern library bridge: 3.1.2 recipe names → 4.1.x cluster taxonomy
 
-- **codebase-orientation** — "How does this project work?" Routes to `get_repo_map` + LSP `document_symbol` before any file reads.
-- **semantic-discovery** — "Find the code that handles X." Routes to `search` for conceptual queries, then LSP for grounding.
-- **change-impact** — "What breaks if I change this?" Combines `get_repo_map(focus_file)` + LSP `incoming_calls` / `find_references` + `find_similar` for blast-radius analysis.
+**Language skills (Track C — 7):**
+`c-recipes`, `javascript-recipes`, `python-recipes`, `rust-recipes`,
+`go-recipes`, `jvm-recipes`, `polyglot-recipes`
 
-### Commands (6)
+### Commands (12)
 
-- `/ripvec:orientation` — **start here.** Overview of ripvec, when to use which tool, MCP↔LSP composition, search scoping.
-- `/ripvec:map [file]` — quick structural overview (optional focus file)
-- `/ripvec:find "query"` — semantic code search
-- `/ripvec:similar file:line` — find code similar to a location
-- `/ripvec:hotspots` — top-PageRank functions (the architectural spine)
-- `/ripvec:duplicates` — find near-duplicate code
+**New in 4.1.10:**
+- `/orient [task]` — **start here for non-trivial tasks.** Triage and route to the right hub.
+- `/cartograph [--focus-file F] [--concept X]` — Cartographer hub; T1/T2/T5/C1 recipes
+- `/blast-radius SYMBOL` — Refactorer T10; P2 Fixed-Point Expansion
+- `/dead-code [--min-cluster-size N] [--max-clusters M]` — Sentinel T16; confidence-band-aware
+- `/audit [module]` — Sentinel multi-cluster; C11 first, fan-out per signal
+- `/teach CONCEPT` — Onboarder T13+T14; examples before definitions
+- `/trace SYMBOL` — Detective T7 Recursive Caller Climb; Pearl do-calculus
+
+**Retained:**
+- `/map [file]` — quick `get_repo_map` with optional focus
+- `/find "query"` — semantic code search
+- `/similar file:line` — find code similar to a location
+- `/hotspots` — top-PageRank functions
+- `/duplicates` — find near-duplicate code
 
 ### Agents (2)
 
-- **code-explorer** — deep codebase exploration combining repo map, semantic search, LSP navigation, and call-hierarchy tracing
+- **code-explorer** — broad codebase exploration: repo map + semantic search + LSP + call hierarchy
 - **duplicate-detector** — workspace-wide near-duplicate detection with LSP grounding
+
+## The 5 orientations (knowledge graph)
+
+The plugin routes non-trivial codebase tasks through 5 orientations.
+Each maps to a hub-skill, a set of technique clusters, and specific recipes.
+Source of truth: `docs/SKILL_SEMANTIC_GRAPH.md` (ripvec engine repo).
+
+| Orientation | Trigger phrasing | Hub-skill | First recipe |
+|---|---|---|---|
+| **Cartographer** | "What matters?" / "Where does X live?" / "How is this organized?" | `ripvec:cartographer` | T1 Structural Spine (`get_repo_map`) |
+| **Detective** | "This looks wrong." / "Invariant violated." / "Works alone, fails in integration." | `ripvec:detective` | T6 Sibling Diff (`find_similar`) or T7 Recursive Caller Climb |
+| **Refactorer** | "Before I rename X." / "What's the blast radius?" / "Before I edit this trait." | `ripvec:refactorer` | T10 Blast-Radius Manifest (`lsp_prepare_call_hierarchy` + P2) |
+| **Onboarder** | "Teach me how Z works." / "Bring me up to speed." | `ripvec:onboarder` | T13 Top-N Architectural Tour + T14 Concept-by-Example |
+| **Sentinel** | "Find dead code." / "Find god-modules." / "Audit for drift." | `ripvec:sentinel` | C11 PageRank Polarity → fan-out to T16/T17/T18 |
+
+Use `/orient` to triage, or load `ripvec:intent-routing` for verbatim phrasal matching.
 
 ## Codex vs Claude Code
 
-ripvec ships the same tool surface to both hosts; only the call syntax differs.
-
 | | Claude Code | Codex |
 |---|---|---|
-| Tool resolution | Deferred — use `ToolSearch("ripvec")` to load by namespace (`mcp__ripvec__*` or `mcp__plugin_ripvec_ripvec__*`) | Direct — call bare names (`search`, `get_repo_map`, `lsp_hover`, etc.) |
-| LSP grounding | **Prefer native `LSP()` tool** when a language server is configured; ripvec MCP `lsp_*` tools are the fallback | ripvec MCP `lsp_*` tools are the primary LSP path (no native LSP integration) |
-| Skills/commands/agents activation | Automatic via Claude Code plugin system | Skills/agents are Claude-Code-specific; Codex calls the MCP tools directly |
+| Tool resolution | Deferred — `ToolSearch("ripvec")` to load namespace (`mcp__ripvec__*` or `mcp__plugin_ripvec_ripvec__*`) | Direct — bare names (`search`, `get_repo_map`, etc.) |
+| LSP grounding | **Prefer native `LSP()` tool** when a language server is configured; ripvec MCP `lsp_*` as fallback | ripvec MCP `lsp_*` tools are the primary LSP path |
+| Skills / commands | Auto-activate via Claude Code plugin system | Call MCP tools directly; skills/commands are Claude-Code-specific |
 
-The composition pattern is identical: `search` (or `get_repo_map`, or `find_similar`) returns results with an `lsp_location` field, which you feed into native `LSP()` (Claude) or ripvec MCP `lsp_*` (Codex) to ground the candidate symbol before editing.
+The composition pattern is identical on both hosts: every ripvec result includes an `lsp_location` field; feed it into LSP tools to ground before editing.
 
 ## Installation
 
-The binary auto-installs on first use — no manual setup needed.
-
 ```shell
-# Install the plugin
 /plugin install ripvec@fnordpig-my-claude-plugins
 ```
 
-### Manual binary install (alternative)
+Or manually:
 
 ```shell
-# Pre-built binary (recommended)
 cargo binstall ripvec-mcp
-
-# Or build from source
+# or
 cargo install --git https://github.com/fnordpig/ripvec ripvec ripvec-mcp
 ```
 
-Single platform path post-v3.0.0: ripvec is CPU-only on all platforms. macOS uses Accelerate BLAS; Linux uses OpenBLAS. No CUDA / Metal / MLX builds (those engines were removed in the v3.0.0 surgery).
+CPU-only on all platforms. macOS uses Accelerate BLAS; Linux uses OpenBLAS.
 
 ## Scoring pipeline
 
-Search results are ranked by a principled Bayesian pipeline:
-
-1. **Semantic similarity** (Model2Vec potion-base-32M static encoder, 256-dim) + **BM25 keyword matching** fused via Reciprocal Rank Fusion (k=60)
-2. **Function-level PageRank boost** — per-definition importance from the call graph, log-saturated to prevent top-heavy distortion
-3. **Cross-encoder rerank** (TinyBERT-L-2-v2) on prose-corpus / NL queries — scope-gated to skip code corpora and symbol-shaped queries
-
-Results from structurally important functions rank higher without promoting irrelevant matches.
-
-## Performance
+1. **Semantic similarity** (Model2Vec potion-base-32M, 256-dim) + **BM25** fused via RRF (k=60)
+2. **Function-level PageRank boost** — log-saturated per-definition importance
+3. **Cross-encoder rerank** (TinyBERT-L-2-v2) — scope-gated; fires on prose corpora and NL queries
 
 | Hardware | Code corpus (tokio) | Prose corpus (gutenberg) |
 |---|---|---|
 | Apple M2 Max | p50 = 0.79 ms, NDCG@10 = 0.78 | p50 = 34.7 ms, NDCG@10 = 1.00 |
-
-(Numbers from `docs/surgery/perf_baseline.json` in the ripvec repo. The cross-encoder rerank is what brings prose NDCG@10 to 1.00; it fires on prose corpora automatically.)

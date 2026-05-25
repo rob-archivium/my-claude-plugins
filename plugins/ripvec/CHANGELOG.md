@@ -1,5 +1,71 @@
 # Changelog
 
+## 4.1.10 (2026-05-24)
+
+Knowledge-graph skill index: manifest bump + orchestration layer.
+
+### Added — ripvec-orientation hub skill
+
+New top-level hub skill (`skills/ripvec-orientation/SKILL.md`) mirroring
+the swarm-orientation pattern. Triages between the 5 orientation hubs
+(Cartographer / Detective / Refactorer / Onboarder / Sentinel) using the
+decision tree from `SKILL_SEMANTIC_GRAPH.md §2`. Includes graph-preamble
+frontmatter (`generalizes_to`, `specializes_into`, `cross_references`,
+`escalate_to`) and dual-host tool surface (Claude Code ToolSearch path +
+Codex bare-names path).
+
+### Added — intent-routing skill
+
+New lookup-table skill (`skills/intent-routing/SKILL.md`) condensing
+`SKILL_TASK_INTENT_INDEX.md §§1-8` into verbatim phrasal triggers →
+hub-skill → first recipe → ripvec MCP terminal. ~50 verbatim phrases
+across 6 intent classes (orientation, debugging, refactoring, teaching,
+sentinel, tool-meta). Full table with caveats lives in the index file;
+this skill is the quick-access path.
+
+### Added — 7 new commands
+
+- `/orient` — top-level entry; triggers ripvec-orientation triage
+- `/cartograph` — Cartographer hub; T1/T2/T5/C1 with optional
+  `--focus-file` or `--concept`
+- `/blast-radius $SYMBOL` — Refactorer T10 chain; P2 Fixed-Point
+  Expansion via lsp_workspace_symbols → prepare_call_hierarchy →
+  incoming_calls until quiescent
+- `/dead-code` — Sentinel T16 sweep; confidence-band-aware; NC11
+  fallback for `confidence=Low` clusters; NC15 response-size parameters
+- `/audit` — Sentinel multi-cluster; C11 PageRank Polarity first,
+  fans to dead-code / cohesion-refraction / naming-drift / orphan-trait
+  per signal
+- `/teach $CONCEPT` — Onboarder T13+T14; architectural tour +
+  concept-by-example; P4 idiom crystallization; M7 prose-grade hover
+  caveat
+- `/trace $SYMBOL` — Detective T7 Recursive Caller Climb; Pearl
+  do-calculus on call DAG; NC11 indirect-dispatch fallback
+
+### Deleted — orientation.md command
+
+Replaced by `orient.md`. The old command is gone; use `/orient` instead.
+
+### Refreshed — 4 base skills with graph-preamble
+
+- `skills/codebase-orientation/SKILL.md` — added `graph:` frontmatter
+  (parent: cartographer; composes-into: semantic-discovery); §0 graph
+  position section
+- `skills/change-impact/SKILL.md` — added `graph:` frontmatter (parent:
+  refactorer; composes-into: codebase-orientation); §0 graph position
+- `skills/semantic-discovery/SKILL.md` — added `graph:` frontmatter
+  (parent: cartographer; composes-into: change-impact); §0 graph position
+- `skills/recipes/SKILL.md` — rewritten to bridge 3.1.2-era recipe
+  names (T1-T18, C1-C12, P1-P10) to 4.1.x cluster taxonomy in
+  `SKILL_SEMANTIC_GRAPH.md §4`; adds §0 graph position, decision table,
+  primitives reference, scale discipline
+
+### Bumped — plugin.json version 4.1.0 → 4.1.10
+
+Description updated to mention knowledge-graph skill index, intent-routing,
+5 orientations as hub skills, 7 per-language recipe skills (Track C),
+executive-function subagents (Track D), and 7 new commands.
+
 ## 4.1.0 (2026-05-23)
 
 Tracks ripvec engine v4.1.0 — minor-version feature release.

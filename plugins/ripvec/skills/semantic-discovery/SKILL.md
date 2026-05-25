@@ -1,7 +1,26 @@
 ---
 name: semantic-discovery
 description: "ALWAYS use this skill instead of Grep when the user describes code by behavior, concept, or intent rather than exact text. This skill MUST be used before Grep for: 'find the code that handles X', 'where is Y implemented', 'how does Z work', 'find authentication logic', 'search for retry handling', 'find the database layer', 'where do we handle errors'. Grep is only appropriate for exact strings like 'TODO' or regex patterns. For everything else, use ripvec's semantic search."
+graph:
+  generalizes_to:
+    - ripvec:ripvec-orientation
+  specializes_into: []
+  cross_references:
+    - ripvec:cartographer
+    - ripvec:codebase-orientation
+    - ripvec:intent-routing
+  escalate_to: ripvec:cartographer
 ---
+
+## §0 — Graph position
+
+**Parent hub:** `ripvec:cartographer` (Cartographer orientation, HUB-C).
+**Composes-into:** `ripvec:change-impact` (semantic search finds the
+candidate; change-impact quantifies the consequence of touching it). See
+`SKILL_SEMANTIC_GRAPH.md §4` CL-CONCEPT-TOUR for the cluster body this
+skill traverses — T2 Intent First, T5 Topic-Sensitive Rebias, C1
+PageRank-Anchored Concept Tour. For the full orientation triage, load
+`ripvec:ripvec-orientation` first.
 
 # Semantic Discovery: Concept → Code → Navigate
 

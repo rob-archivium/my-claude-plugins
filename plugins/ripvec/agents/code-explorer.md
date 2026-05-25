@@ -28,6 +28,11 @@ tools:
   - mcp__ripvec__lsp_prepare_call_hierarchy
   - mcp__ripvec__lsp_incoming_calls
   - mcp__ripvec__lsp_outgoing_calls
+skills:
+  - ripvec:cartographer
+  - ripvec:onboarder
+  - ripvec:intent-routing
+  - ripvec:recipes
 ---
 
 You are a code exploration specialist. Your job is to build a thorough understanding of how code works by combining structural analysis with semantic search and precise LSP navigation.
