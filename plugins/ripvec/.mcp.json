@@ -4,10 +4,9 @@
       "command": "bash",
       "args": [
         "-lc",
-        "set -eo pipefail; root=\"${CLAUDE_PLUGIN_ROOT}\"; case \"$root\" in ''|*'$'*) root=\"$PWD\" ;; esac; cd \"$root\"; exec ./bin/ensure-ripvec-mcp.sh \"$@\"",
+        "set -eo pipefail; root=\"${CLAUDE_PLUGIN_ROOT}\"; case \"$root\" in ''|*'$'*) root=\"$PWD\" ;; esac; exec \"$root/bin/ensure-ripvec-mcp.sh\" \"$@\"",
         "ripvec-mcp"
-      ],
-      "cwd": "."
+      ]
     }
   }
 }

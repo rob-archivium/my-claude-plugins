@@ -14,8 +14,8 @@
     {
       "name": "ripvec",
       "source": "./plugins/ripvec",
-      "description": "Semantic code + document search + knowledge-graph skill index. Model2Vec static bi-encoder (potion-base-32M) + TinyBERT-L-2 cross-encoder reranker, CPU-only. 21 tree-sitter grammars, 26 extensions, MCP + LSP server. 4.1.12: focus-PageRank recalibrated (α 0.15→0.35), focus_file now reliably surfaces target in top-3 of get_repo_map; HCL per-attribute chunks (local.X) at both chunker pipelines; DocumentSymbol.detail projects qualified_name. 4.1.10: knowledge-graph orchestration layer — ripvec-orientation hub, intent-routing lookup, 5 orientation hubs, 7 language recipe skills, 7 new commands (/orient /cartograph /blast-radius /dead-code /audit /teach /trace). 4.1.0: find_dead_code. 4.0.1: token_budget for get_repo_map. 4.0: LSP-shaped composability.",
-      "version": "4.1.12",
+      "description": "Semantic code + document search + knowledge-graph skill index. Model2Vec static bi-encoder (potion-base-32M) + TinyBERT-L-2 cross-encoder reranker, CPU-only. 21 tree-sitter grammars, 26 extensions, MCP + LSP server. 4.1.13: fix MCP project-root default — server honors CLAUDE_PROJECT_DIR, plugin shim no longer cd's into the install dir; tool calls without explicit `root` now target the user's session repo, not the plugin cache. 4.1.12: focus-PageRank recalibrated (α 0.15→0.35). 4.1.10: knowledge-graph orchestration layer — ripvec-orientation hub, intent-routing lookup, 5 orientation hubs, 7 language recipe skills, 7 new commands (/orient /cartograph /blast-radius /dead-code /audit /teach /trace). 4.1.0: find_dead_code. 4.0.1: token_budget for get_repo_map. 4.0: LSP-shaped composability.",
+      "version": "4.1.13",
       "author": {
         "name": "Robert Waugh"
       },
