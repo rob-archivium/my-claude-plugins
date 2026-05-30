@@ -1,7 +1,7 @@
 {
   "name": "ripvec",
-  "version": "4.1.15",
-  "description": "Semantic code search + multi-language LSP + knowledge-graph skill index. 21 grammars, 26 extensions, function-level PageRank, hybrid BM25+vector ranking. Model2Vec static encoder + TinyBERT cross-encoder reranker, CPU-only. 4.1.15: trim intent-routing skill description under Codex's 1024-char loader limit (was 1047, now 900); orientation-grouped triggers preserved. 4.1.14: up_to_date MCP tool rebuilt for plugin-install users — release_stale + upgrade_hint via GitHub Releases API. 4.1.13: MCP project-root default honors CLAUDE_PROJECT_DIR. 4.1.12: focus-PageRank recalibrated (α 0.15 → 0.35). 4.1.10: knowledge-graph skill index. 4.1.0: find_dead_code MCP tool. 4.0: LSP-shaped composability.",
+  "version": "4.1.16",
+  "description": "Semantic code search + multi-language LSP + knowledge-graph skill index. 21 grammars, 26 extensions, function-level PageRank, hybrid BM25+vector ranking. Model2Vec static encoder + TinyBERT cross-encoder reranker, CPU-only. 4.1.16: portable MCP launcher fallback locates the installed plugin root in Codex without changing the project cwd. 4.1.15: trim intent-routing skill description under Codex's 1024-char loader limit; orientation-grouped triggers preserved. 4.1.14: up_to_date MCP tool rebuilt for plugin-install users. 4.1.13: MCP project-root default honors CLAUDE_PROJECT_DIR. 4.1.10: knowledge-graph skill index. 4.1.0: find_dead_code MCP tool. 4.0: LSP-shaped composability.",
   "author": {
     "name": "Robert Waugh",
     "url": "https://github.com/fnordpig"

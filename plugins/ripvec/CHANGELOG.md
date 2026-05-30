@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.1.16 (2026-05-30)
+
+### Fixed
+- MCP launcher fallback now separates plugin-root discovery from the
+  server's runtime cwd. Hosts that substitute `${CLAUDE_PLUGIN_ROOT}`
+  still use that path directly. Hosts that do not, including current
+  Codex plugin MCP startup, discover an installed ripvec plugin root
+  under `~/.codex/plugins/cache` or `~/.claude/plugins/cache` and exec
+  `bin/ensure-ripvec-mcp.sh` by absolute path.
+- The MCP server `cwd` remains unset in the plugin config, so Codex's
+  local stdio fallback cwd stays the current project rather than the
+  plugin cache. Tool calls without an explicit `root` continue to
+  target the user's session repo.
+
 ## 4.1.10 (2026-05-24)
 
 Knowledge-graph skill index: manifest bump + orchestration layer.

@@ -4,7 +4,7 @@
       "command": "bash",
       "args": [
         "-lc",
-        "set -eo pipefail; root=\"${CLAUDE_PLUGIN_ROOT}\"; case \"$root\" in ''|*'$'*) root=\"$PWD\" ;; esac; exec \"$root/bin/ensure-ripvec-mcp.sh\" \"$@\"",
+        "set -eo pipefail; root=\"${CLAUDE_PLUGIN_ROOT}\"; case \"$root\" in ''|*'$'*) root=''; while IFS= read -r d; do if [ -x \"$d/bin/ensure-ripvec-mcp.sh\" ]; then root=\"$d\"; break; fi; done < <(find \"$HOME/.codex/plugins/cache\" \"$HOME/.claude/plugins/cache\" -path '*/ripvec/*' -type d -prune 2>/dev/null | sort -Vr) ;; esac; if [ -z \"$root\" ] || [ ! -x \"$root/bin/ensure-ripvec-mcp.sh\" ]; then echo \"ripvec plugin root not found; expected host plugin-root substitution or an installed ripvec plugin under ~/.codex/plugins/cache or ~/.claude/plugins/cache\" >&2; exit 1; fi; exec \"$root/bin/ensure-ripvec-mcp.sh\" \"$@\"",
         "ripvec-mcp"
       ]
     }
