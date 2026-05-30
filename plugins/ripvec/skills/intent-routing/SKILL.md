@@ -3,19 +3,17 @@ name: intent-routing
 description: >
   Use when you have a concrete codebase task and need to know which ripvec
   orientation, cluster, and first recipe to fire. Triggers on verbatim
-  phrasal matches including: "what matters in this codebase", "how is this
-  project organized", "where should I start", "show me the architectural
-  spine", "find the auth/cache/retry logic", "find the code that handles X",
-  "this looks reasonable but it's wrong", "works in isolation fails in
-  integration", "something violates an invariant", "before I rename X",
-  "what's the blast radius", "before I edit this trait", "should I extract
-  these", "teach me how Z works", "bring me up to speed", "explain the
-  architecture", "find dead code", "is X dead", "what's wrong with this
-  module", "find god-modules", "find dead islands", "audit this codebase
-  for drift", "find unused traits", "find files that need splitting".
-  Also triggers on tool-surface meta-questions: "which ripvec tools are
-  available", "find_dead_code says X is dead but I don't believe it",
-  "which corpora should I validate against".
+  phrases like "what matters in this codebase", "where should I start",
+  "find the code that handles X" (→ Cartographer); "this looks reasonable
+  but it's wrong", "works in isolation fails in integration", "something
+  violates an invariant" (→ Detective); "before I rename X", "what's the
+  blast radius", "should I extract this" (→ Refactorer); "teach me how Z
+  works", "bring me up to speed", "explain the architecture" (→ Onboarder);
+  "find dead code", "what's wrong with this module", "audit for drift",
+  "find god-modules", "find unused traits" (→ Sentinel). Also triggers on
+  tool-surface meta-questions: "which ripvec tools are available",
+  "find_dead_code says X is dead but I don't believe it", "which corpora
+  should I validate against".
 graph:
   generalizes_to:
     - ripvec:ripvec-orientation

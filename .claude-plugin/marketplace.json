@@ -14,8 +14,8 @@
     {
       "name": "ripvec",
       "source": "./plugins/ripvec",
-      "description": "Semantic code + document search + knowledge-graph skill index. Model2Vec static bi-encoder (potion-base-32M) + TinyBERT-L-2 cross-encoder reranker, CPU-only. 21 tree-sitter grammars, 26 extensions, MCP + LSP server. 4.1.14: up_to_date MCP tool rebuilt — always returns version + install_kind (plugin/source/unknown); GitHub Releases API check so plugin users see release_stale + upgrade_hint when a newer binary is available; unified status field (up_to_date / release_available / source_newer_than_binary). 4.1.13: MCP project-root default honors CLAUDE_PROJECT_DIR. 4.1.12: focus-PageRank recalibrated (α 0.15→0.35). 4.1.10: knowledge-graph orchestration layer — 5 orientation hubs, 7 language recipe skills, 7 commands (/orient /cartograph /blast-radius /dead-code /audit /teach /trace). 4.1.0: find_dead_code. 4.0: LSP-shaped composability.",
-      "version": "4.1.14",
+      "description": "Semantic code + document search + knowledge-graph skill index. Model2Vec static bi-encoder (potion-base-32M) + TinyBERT-L-2 cross-encoder reranker, CPU-only. 21 tree-sitter grammars, 26 extensions, MCP + LSP server. 4.1.15: intent-routing skill description trimmed under Codex's 1024-char loader limit (was 1047, now 900); orientation-grouped triggers preserved. 4.1.14: up_to_date MCP tool rebuilt — release_stale + upgrade_hint via GitHub Releases API. 4.1.13: MCP project-root default honors CLAUDE_PROJECT_DIR. 4.1.12: focus-PageRank recalibrated (α 0.15→0.35). 4.1.10: knowledge-graph orchestration layer — 5 orientation hubs, 7 language recipe skills, 7 commands (/orient /cartograph /blast-radius /dead-code /audit /teach /trace). 4.1.0: find_dead_code. 4.0: LSP-shaped composability.",
+      "version": "4.1.15",
       "author": {
         "name": "Robert Waugh"
       },
